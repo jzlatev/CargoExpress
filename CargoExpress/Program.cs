@@ -1,3 +1,4 @@
+using CargoExpress.Core.Constants;
 using CargoExpress.Data;
 using CargoExpress.ModelBinders;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +18,8 @@ builder.Services.AddControllersWithViews()
     .AddMvcOptions(option =>
     {
         option.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+        option.ModelBinderProviders.Insert(1, new DateTimeModelBinderProvider(FormatingConstant.BGDateFormat));
+        option.ModelBinderProviders.Insert(2, new DoubleModelBinderProvider());
     });
 
 var app = builder.Build();

@@ -10,8 +10,4 @@
     <ProjectReference Include="..\CargoExpress.Infrastructure\CargoExpress.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Constants\" />
-  </ItemGroup>
-
 </Project>
