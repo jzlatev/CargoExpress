@@ -1,5 +1,5 @@
 using CargoExpress.Core.Constants;
-using CargoExpress.Data;
+using CargoExpress.Infrastructure.Data;
 using CargoExpress.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

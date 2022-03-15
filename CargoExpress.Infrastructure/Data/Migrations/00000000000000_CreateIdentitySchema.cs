@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 
-namespace CargoExpress.Data.Migrations
+namespace CargoExpress.Infrastructure.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

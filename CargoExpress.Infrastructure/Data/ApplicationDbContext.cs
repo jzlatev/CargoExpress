@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CargoExpress.Data
+namespace CargoExpress.Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
