@@ -1,5 +1,6 @@
 using CargoExpress.Core.Constants;
 using CargoExpress.Infrastructure.Data;
+using CargoExpress.Infrastructure.Data.Repositories;
 using CargoExpress.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,8 @@ builder.Services.AddControllersWithViews()
         option.ModelBinderProviders.Insert(1, new DateTimeModelBinderProvider(FormatingConstant.BGDateFormat));
         option.ModelBinderProviders.Insert(2, new DoubleModelBinderProvider());
     });
+
+builder.Services.AddScoped<IApplicationDbRepository, ApplicationDbRepository>();
 
 var app = builder.Build();
 
