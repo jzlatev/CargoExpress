@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// Add contexts
 builder.Services.AddApplicationDbContext(builder.Configuration);
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     {
@@ -21,6 +22,7 @@ builder.Services.AddControllersWithViews()
         option.ModelBinderProviders.Insert(2, new DoubleModelBinderProvider());
     });
 
+// Add services
 builder.Services.AddApplicationService();
 
 var app = builder.Build();

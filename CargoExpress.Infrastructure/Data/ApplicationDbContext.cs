@@ -17,6 +17,14 @@ namespace CargoExpress.Infrastructure.Data
 
             builder.Entity<DeliveryTruck>()
                 .HasKey(dt => new { dt.DeliveryId, dt.TruckId });
+
+            builder.Entity<Cargo>()
+                .HasIndex(c => c.CargoRef)
+                .IsUnique();
+
+            builder.Entity<Delivery>()
+                .HasIndex(d => d.DeliveryRef)
+                .IsUnique();
         }
 
         public DbSet<Cargo> Cargos { get; set; }
