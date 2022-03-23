@@ -1,4 +1,6 @@
-﻿using CargoExpress.Infrastructure.Data;
+﻿using CargoExpress.Core.Contracts;
+using CargoExpress.Core.Services;
+using CargoExpress.Infrastructure.Data;
 using CargoExpress.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApplicationService(this IServiceCollection services)
         {
             services.AddScoped<IApplicationDbRepository, ApplicationDbRepository>();
+            services.AddScoped<ICargoService, CargoService>();
 
             return services;
         }

@@ -1,0 +1,87 @@
+﻿@using CargoExpress.Core.Models
+@model CargoCreateViewModel
+
+@{
+	ViewData["Title"] = "Create Cargo";
+	//var items = (List<SelectListItem>)ViewBag.TypeItems;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>@ViewData["Title"]</title>
+
+	<!-- Google Font: Source Sans Pro -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+	<!-- icheck bootstrap -->
+	<link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="~/css/adminlte.min.css">
+</head>
+<body class="hold-transition">
+	<section class="content">
+		<form id="createCargo" method="post">
+			<div class="offset-md-3 col-md-6 offset-xl-3 col-xl-6 col-sm-12">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="card card-primary">
+					<div class="card-header">
+						<h3 class="card-title">Create</h3>
+					</div>
+					<div class="card-body" style="display: block;">
+						<div class="form-group">
+							<label asp-for="CargoRef" class="form-label"></label>
+							<input asp-for="CargoRef" class="form-control" placeholder="Referent number" aria-required="true" />
+							<span asp-validation-for="CargoRef" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="Name" class="form-label"></label>
+							<input asp-for="Name" class="form-control" placeholder="Cargo name" aria-required="true" />
+							<span asp-validation-for="Name" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="Description" class="form-label"></label>
+							<textarea id="inputDescription" asp-for="Description" class="form-control" rows="3" placeholder="Cargo details"></textarea>
+						</div>
+						<div class="form-group">
+							<label asp-for="IsDangerous" class="form-label"></label>
+							<select asp-for="IsDangerous" class="form-control custom-select" asp-items="@Html.GetEnumSelectList<TypeOfCargoEnum>()"></select>
+							@*<select asp-for="IsDangerous" class="form-control custom-select">
+								@foreach (var category in @Html.GetEnumSelectList<TypeOfCargoEnum>())
+									{
+										<option value="@category.Value">@category.Text</option>
+									}
+							</select>*@
+						</div>
+						<div class="form-group">
+							<label asp-for="Weight" class="form-label"></label>
+							<input asp-for="Weight" class="form-control" placeholder="Weight" aria-required="true" />
+							<span asp-validation-for="Weight" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="DeliveryId" class="form-label"></label>
+							<input asp-for="DeliveryId" class="form-control" placeholder="Delivery number" aria-required="true" />
+							<span asp-validation-for="DeliveryId" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="card-footer">
+						<a href="/" class="btn btn-secondary">Cancel</a>
+						<input type="submit" value="Create" class="btn btn-success float-right">
+					</div>
+				</div>
+			</div>
+
+		</form>
+	</section>
+	<!-- /.card -->
+	<!-- jQuery -->
+	<script src="~/plugins/jquery/jquery.min.js"></script>
+	<!-- Bootstrap 4 -->
+	<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="~/js/adminlte.min.js"></script>
+	<partial name="_ValidationScriptsPartial" />
+</body>
+</html>
