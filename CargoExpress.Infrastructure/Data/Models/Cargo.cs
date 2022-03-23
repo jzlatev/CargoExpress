@@ -20,7 +20,11 @@ namespace CargoExpress.Infrastructure.Data.Models
         [Range(1, 300000)]
         public float Weight { get; set; }
 
+        [MaxLength(1000)]
+        public string? Description { get; set; }
+
         [Required]
+        [Range(0, 1)]
         public bool IsDangerous { get; set; }
 
         [ForeignKey(nameof(Delivery))]
