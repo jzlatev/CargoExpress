@@ -37,7 +37,14 @@ namespace CargoExpress.Controllers
 
             this.cargoService.Create(model);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(All));
+        }
+
+        public IActionResult All()
+        {
+            var cargos = cargoService.All();
+
+            return View(cargos);
         }
     }
 }

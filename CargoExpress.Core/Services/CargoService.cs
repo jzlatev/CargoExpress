@@ -14,6 +14,25 @@ namespace CargoExpress.Core.Services
             this.repo = _repo;
         }
 
+        public IEnumerable<CargoAllViewModel> All()
+        {
+           var allCargos =  repo.All<Cargo>()
+                .OrderByDescending(c => c.CreatedAt)
+                .Select(c => new CargoAllViewModel
+                {
+                    Id = c.Id.ToString(),
+                    CargoRef = c.CargoRef,
+                    Name = c.Name,
+                    Weight = c.Weight,
+                    CreatedAt = c.CreatedAt,
+                    IsDangerous = c.IsDangerous == true ? "Yes" : "No",
+                    Description = c.Description
+                })
+                .ToList();
+
+            return allCargos;
+        }
+
         public async Task Create(CargoCreateViewModel model)
         {
             Cargo cargo = new Cargo

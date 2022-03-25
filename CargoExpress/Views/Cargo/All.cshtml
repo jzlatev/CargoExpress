@@ -1,0 +1,54 @@
+﻿@using CargoExpress.Core.Models
+@model IEnumerable<CargoAllViewModel>
+
+@{
+	ViewData["Title"] = "All Cargos";
+}
+
+<div class="row">
+	<div class="offset-md-1 col-md-10 offset-xl-1 col-xl-10 col-sm-12">
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">All cargos</h3>
+			</div>
+			<div class="card-body">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th style="width: 120px">Referent Number</th>
+							<th style="width: 120px">Date</th>
+							<th style="width: 300px">Name</th>
+							<th style="width: 100px">Weight</th>
+							<th style="width: 15px">Dangerous</th>
+							<th>Description</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var cargo in Model)
+						{
+							<tr>
+								<td>@cargo.CargoRef</td>
+								<td>@cargo.CreatedAt</td>
+								<td>@cargo.Name</td>
+								<td>@cargo.Weight</td>
+								<td>@cargo.IsDangerous</td>
+								<td>@cargo.Description</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+
+			<div class="card-footer clearfix">
+				<ul class="pagination pagination-sm m-0 float-right">
+					<li class="page-item"><a class="page-link" href="#">«</a></li>
+					<li class="page-item"><a class="page-link" href="#">1</a></li>
+					<li class="page-item"><a class="page-link" href="#">2</a></li>
+					<li class="page-item"><a class="page-link" href="#">3</a></li>
+					<li class="page-item"><a class="page-link" href="#">»</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
