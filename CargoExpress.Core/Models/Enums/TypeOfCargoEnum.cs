@@ -2,7 +2,7 @@
 {
     public enum TypeOfCargoEnum
     {
-        Yes = 0,
-        No = 1,
+        No = 0,
+        Yes = 1
     }
 }

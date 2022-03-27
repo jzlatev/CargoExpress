@@ -21,7 +21,7 @@ namespace CargoExpress.Infrastructure.Data.Models
         public float Weight { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.Now.Date;
+        public DateTime CreatedAt { get; set; }
 
         [MaxLength(1000)]
         public string? Description { get; set; }

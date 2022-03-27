@@ -1,5 +1,6 @@
 ﻿using CargoExpress.Core.Contracts;
 using CargoExpress.Core.Models;
+using CargoExpress.Core.Models.Enums;
 using CargoExpress.Infrastructure.Data.Models;
 using CargoExpress.Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,9 @@ namespace CargoExpress.Controllers
         [HttpPost]
         public IActionResult Create(CargoCreateViewModel model)
         {
-            if (this.repo.All<Cargo>().Any(c => c.CargoRef == model.CargoRef))
+            var isExists = this.repo.All<Cargo>().Any(c => c.CargoRef == model.CargoRef);
+
+            if (isExists)
             {
                 this.ModelState.AddModelError(nameof(model.CargoRef), "The cargo has already been added!");
             }
@@ -40,11 +43,17 @@ namespace CargoExpress.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        public IActionResult All()
+        public IActionResult All(string searchTerm, CargoSorting sorting)
         {
-            var cargos = cargoService.All();
+            
+            var cargos = cargoService.All(searchTerm, sorting);
 
-            return View(cargos);
+            return View(new CargoSearchQueryModel
+            {
+                Cargos = cargos,
+                SearchTerm = searchTerm,
+                Sorting = sorting
+            });
         }
     }
 }

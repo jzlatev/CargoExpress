@@ -1,4 +1,5 @@
 ﻿using CargoExpress.Core.Models;
+using CargoExpress.Core.Models.Enums;
 
 namespace CargoExpress.Core.Contracts
 {
@@ -6,6 +7,6 @@ namespace CargoExpress.Core.Contracts
     {
         Task Create(CargoCreateViewModel model);
 
-        public IEnumerable<CargoAllViewModel> All();
+        public IEnumerable<CargoAllViewModel> All(string searchTerm, CargoSorting sorting);
     }
 }

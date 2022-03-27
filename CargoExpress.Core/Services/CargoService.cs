@@ -1,5 +1,6 @@
 ﻿using CargoExpress.Core.Contracts;
 using CargoExpress.Core.Models;
+using CargoExpress.Core.Models.Enums;
 using CargoExpress.Infrastructure.Data.Models;
 using CargoExpress.Infrastructure.Data.Repositories;
 
@@ -14,9 +15,28 @@ namespace CargoExpress.Core.Services
             this.repo = _repo;
         }
 
-        public IEnumerable<CargoAllViewModel> All()
+        public IEnumerable<CargoAllViewModel> All(string searchTerm, CargoSorting sorting)
         {
-           var allCargos =  repo.All<Cargo>()
+            var cargoQuery = repo.All<Cargo>().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                cargoQuery = cargoQuery.Where(c => 
+                c.Name.ToLower().Contains(searchTerm.ToLower()) ||
+                c.Description.ToLower().Contains(searchTerm.ToLower()) ||
+                c.CargoRef.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            cargoQuery = sorting switch
+            {
+                CargoSorting.Date => cargoQuery.OrderByDescending(d => d.CreatedAt),
+                CargoSorting.Name => cargoQuery.OrderByDescending(n => n.Name),
+                CargoSorting.Weight => cargoQuery.OrderByDescending(w => w.Weight),
+                CargoSorting.Type => cargoQuery.OrderByDescending(t => t.IsDangerous),
+                _ => cargoQuery.OrderByDescending(r => r.CargoRef)
+            };
+
+            var allCargos = cargoQuery
                 .OrderByDescending(c => c.CreatedAt)
                 .Select(c => new CargoAllViewModel
                 {
@@ -42,7 +62,8 @@ namespace CargoExpress.Core.Services
                 Weight = model.Weight,
                 Description = model.Description,
                 IsDangerous = model.IsDangerous,
-                DeliveryId = model.DeliveryId
+                DeliveryId = model.DeliveryId,
+                CreatedAt = DateTime.Now.Date
             };
 
             try
