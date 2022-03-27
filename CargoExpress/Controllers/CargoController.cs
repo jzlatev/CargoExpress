@@ -35,25 +35,22 @@ namespace CargoExpress.Controllers
 
             if (!ModelState.IsValid)
             {
+                return Json(ModelState.Values.SelectMany(v => v.Errors));
                 return View(model);
             }
+
+
 
             this.cargoService.Create(model);
 
             return RedirectToAction(nameof(All));
         }
 
-        public IActionResult All(string searchTerm, CargoSorting sorting)
+        public IActionResult All([FromQuery]CargoSearchQueryModel query)
         {
-            
-            var cargos = cargoService.All(searchTerm, sorting);
+            (query.Cargos,query.TotalCargo) = cargoService.All(query.SearchTerm, query.Sorting, query.CurrentPage);
 
-            return View(new CargoSearchQueryModel
-            {
-                Cargos = cargos,
-                SearchTerm = searchTerm,
-                Sorting = sorting
-            });
+            return View(query);
         }
     }
 }

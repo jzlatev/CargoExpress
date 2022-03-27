@@ -15,7 +15,7 @@ namespace CargoExpress.Core.Services
             this.repo = _repo;
         }
 
-        public IEnumerable<CargoAllViewModel> All(string searchTerm, CargoSorting sorting)
+        public (IEnumerable<CargoAllViewModel>, int totalCargo) All(string? searchTerm, CargoSorting sorting, int currentPage)
         {
             var cargoQuery = repo.All<Cargo>().AsQueryable();
 
@@ -36,7 +36,11 @@ namespace CargoExpress.Core.Services
                 _ => cargoQuery.OrderByDescending(r => r.CargoRef)
             };
 
-            var allCargos = cargoQuery
+            var totalNumCargo = cargoQuery.Count();
+
+            var allCargosCurrentPage = cargoQuery
+                .Skip((currentPage - 1) * CargoSearchQueryModel.CargosPerPage) // Curnt page - 1 * number of all pages
+                .Take(CargoSearchQueryModel.CargosPerPage)
                 .OrderByDescending(c => c.CreatedAt)
                 .Select(c => new CargoAllViewModel
                 {
@@ -46,11 +50,12 @@ namespace CargoExpress.Core.Services
                     Weight = c.Weight,
                     CreatedAt = c.CreatedAt,
                     IsDangerous = c.IsDangerous == true ? "Yes" : "No",
-                    Description = c.Description
+                    Description = c.Description,
+                    Status = c.Delivery!=null?"Picked":"Free",
                 })
                 .ToList();
 
-            return allCargos;
+            return (allCargosCurrentPage, totalNumCargo);
         }
 
         public async Task Create(CargoCreateViewModel model)
@@ -62,7 +67,6 @@ namespace CargoExpress.Core.Services
                 Weight = model.Weight,
                 Description = model.Description,
                 IsDangerous = model.IsDangerous,
-                DeliveryId = model.DeliveryId,
                 CreatedAt = DateTime.Now.Date
             };
 

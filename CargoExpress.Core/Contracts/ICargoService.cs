@@ -7,6 +7,6 @@ namespace CargoExpress.Core.Contracts
     {
         Task Create(CargoCreateViewModel model);
 
-        public IEnumerable<CargoAllViewModel> All(string searchTerm, CargoSorting sorting);
+        public (IEnumerable<CargoAllViewModel>, int totalCargo) All(string? searchTerm, CargoSorting sorting, int currentPage);
     }
 }

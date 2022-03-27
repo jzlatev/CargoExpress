@@ -38,15 +38,8 @@ namespace CargoExpress.Core.Models
         /// <summary>
         /// Type of cargo. Dangerous or ordinary.
         /// </summary>
-        [Required]
-        [Range(0, 1)]
         [Display(Name = "Is dangerous")]
         public bool IsDangerous { get; set; }
 
-        /// <summary>
-        /// Number of spedition.
-        /// </summary>
-        [Display(Name = "Delivery reference")]
-        public Guid? DeliveryId { get; set; }
     }
 }

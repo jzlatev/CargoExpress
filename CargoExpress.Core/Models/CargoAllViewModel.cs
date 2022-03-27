@@ -15,5 +15,7 @@
         public string? Description { get; set; }
 
         public string? IsDangerous { get; set; }
+
+        public string Status { get; set; }
     }
 }

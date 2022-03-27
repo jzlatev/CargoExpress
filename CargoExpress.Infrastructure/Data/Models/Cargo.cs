@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CargoExpress.Infrastructure.Data.Models
@@ -27,11 +28,11 @@ namespace CargoExpress.Infrastructure.Data.Models
         public string? Description { get; set; }
 
         [Required]
-        [Range(0, 1)]
         public bool IsDangerous { get; set; }
 
         [ForeignKey(nameof(Delivery))]
         public Guid? DeliveryId { get; set; }
         public Delivery? Delivery { get; set; }
+
     }
 }
