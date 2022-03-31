@@ -1,0 +1,46 @@
+﻿@using CargoExpress.Core.Models
+@model DeliveryCreateViewModel
+
+@{
+	ViewData["Title"] = "Create delivery";
+}
+
+<section class="content">
+	<form id="createCargo" method="post">
+		<div class="offset-md-3 col-md-6 offset-xl-3 col-xl-6 col-sm-12">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="card card-primary">
+				<div class="card-header">
+					<h3 class="card-title">Create</h3>
+				</div>
+				<div class="card-body" style="display: block;">
+					<div class="form-group">
+						<label asp-for="PickWarehouseId" class="form-label"></label>
+						<input asp-for="PickWarehouseId" class="form-control" placeholder="Loading warehouse number" />
+						<span asp-validation-for="PickWarehouseId" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="PickAddress" class="form-label"></label>
+						<input asp-for="PickAddress" class="form-control" placeholder="Loading address" />
+						<span asp-validation-for="PickAddress" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="DeliveryWarehouseId" class="form-label"></label>
+						<input asp-for="DeliveryWarehouseId" class="form-control" placeholder="Delivery warehouse number" />
+						<span asp-validation-for="DeliveryWarehouseId" class="text-danger"></span>
+					</div>
+					<div class="form-group">
+						<label asp-for="DeliveryAddress" class="form-label"></label>
+						<input asp-for="DeliveryAddress" class="form-control" placeholder="Delivery address" />
+						<span asp-validation-for="DeliveryAddress" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="card-footer">
+					<a href="/" class="btn btn-secondary">Cancel</a>
+					<input type="submit" value="Create" class="btn btn-success float-right">
+				</div>
+			</div>
+		</div>
+
+	</form>
+</section>
