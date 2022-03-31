@@ -1,22 +1,15 @@
 ﻿namespace CargoExpress.Controllers
 {
-	using CargoExpress.Core.Contracts;
-	using CargoExpress.Core.Models;
-	using CargoExpress.Infrastructure.Data.Models;
-	using CargoExpress.Infrastructure.Data.Repositories;
-	using Microsoft.AspNetCore.Identity;
-	using Microsoft.AspNetCore.Mvc;
-	using System.Security.Principal;
+    using CargoExpress.Core.Contracts;
+    using CargoExpress.Core.Models;
+    using Microsoft.AspNetCore.Mvc;
 
-	public class DeliveryController : BaseController
+    public class DeliveryController : BaseController
     {
-        private readonly IApplicationDbRepository repo;
         private readonly IDeliveryService deliveryService;
 
-
-        public DeliveryController(IApplicationDbRepository _repo, IDeliveryService _deliveryService)
+        public DeliveryController(IDeliveryService _deliveryService)
 		{
-            this.repo = _repo;
 			this.deliveryService = _deliveryService;
         }
 
@@ -28,23 +21,26 @@
 		[HttpPost]
 		public IActionResult Create(DeliveryCreateViewModel model)
 		{
-            /*
-            var isExists = this.repo.All<Delivery>().Any(d => d.DeliveryRef == model.DeliveryRef);
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
 
-            if (isExists)
+            try
             {
-                this.ModelState.AddModelError(nameof(model.DeliveryRef), "The delivery has already been added!");
+			    this.deliveryService.Create(model, User);
             }
-            */
-            if (!ModelState.IsValid)
+            catch (InvalidOperationException ioe)
             {
-                return View(model);
+				this.ModelState.AddModelError(nameof(model.PickedAt), ioe.Message);
             }
 
-            this.deliveryService.Create(model, User);
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
 
-            return RedirectToAction("All", "Cargo");
-            //return View();
+			return RedirectToAction("All", "Cargo");
         }
     }
 }

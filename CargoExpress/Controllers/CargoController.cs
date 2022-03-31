@@ -35,11 +35,8 @@ namespace CargoExpress.Controllers
 
             if (!ModelState.IsValid)
             {
-                return Json(ModelState.Values.SelectMany(v => v.Errors));
                 return View(model);
             }
-
-
 
             this.cargoService.Create(model);
 

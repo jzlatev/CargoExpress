@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "CargoExpress.Core": {
+      "commandName": "Project",
+      "sqlDebugging": true,
+      "hotReloadEnabled": true
+    }
+  }
+}

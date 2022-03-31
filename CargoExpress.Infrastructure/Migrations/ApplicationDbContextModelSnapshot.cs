@@ -98,9 +98,6 @@ namespace CargoExpress.Infrastructure.Data.Migrations
                     b.Property<DateTime?>("PickedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("TruckId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

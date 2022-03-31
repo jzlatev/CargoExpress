@@ -8,12 +8,17 @@ namespace CargoExpress.Core.CustomAttributes
 
         public IsBeforeAttribute(string _date, string errorMessage = "")
         {
-            date = _date;
-            ErrorMessage = errorMessage;
+            this.date = _date;
+            this.ErrorMessage = errorMessage;
         }
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
+            if (value == null)
+            {
+                return new ValidationResult("Invalid date!");
+            }
+
             try
             {
                 DateTime dateToCompare = (DateTime)validationContext
@@ -21,7 +26,7 @@ namespace CargoExpress.Core.CustomAttributes
                     .GetProperty(date)
                     .GetValue(validationContext.ObjectInstance);
             
-                if ((DateTime)value < dateToCompare)
+                if ((DateTime)value > dateToCompare)
                 {
                     return ValidationResult.Success;
                 }

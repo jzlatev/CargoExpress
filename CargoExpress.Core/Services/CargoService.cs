@@ -51,7 +51,7 @@ namespace CargoExpress.Core.Services
                     CreatedAt = c.CreatedAt,
                     IsDangerous = c.IsDangerous == true ? "Yes" : "No",
                     Description = c.Description,
-                    Status = c.Delivery!=null?"Picked":"Free",
+                    Status = c.Delivery != null ? "Picked" : "Free",
                 })
                 .ToList();
 
@@ -67,13 +67,13 @@ namespace CargoExpress.Core.Services
                 Weight = model.Weight,
                 Description = model.Description,
                 IsDangerous = model.IsDangerous,
-                CreatedAt = DateTime.Now.Date
+                CreatedAt = DateTime.Now
             };
 
             try
             {
                 await repo.AddAsync(cargo);
-                await repo.SaveChangesAsync();
+                repo.SaveChanges();
             }
             catch (InvalidOperationException)
             {}

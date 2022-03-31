@@ -40,6 +40,5 @@ namespace CargoExpress.Core.Models
         /// </summary>
         [Display(Name = "Is dangerous")]
         public bool IsDangerous { get; set; }
-
     }
 }
