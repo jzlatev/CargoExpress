@@ -13,6 +13,13 @@
             this.warehouseService = _warehouseService;
         }
 
+        public IActionResult All([FromQuery]WarehouseSearchQueryModel query)
+        {
+            (query.Warehouses, query.TotalWarehouses) = warehouseService.All(query.SearchTerm, query.CurrentPage);
+
+            return View(query);
+        }
+
         public IActionResult Create()
         {
             return View();

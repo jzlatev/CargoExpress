@@ -1,0 +1,84 @@
+﻿@model WarehouseSearchQueryModel
+
+@{
+	ViewData["Title"] = "All warehouses";
+}
+
+<form method="get">
+	<div class="row mb-3">
+		<div class="form-group col-md-4 offset-md-2">
+			<div class="form-group">
+				<label asp-for="SearchTerm" class="form-label"></label>
+				<input asp-for="SearchTerm" class="form-control" placeholder="Text" />
+			</div>
+		</div>
+		<div class="form-group col-md-3">
+			<input type="submit" class="btn btn-primary d-none" value="Search" />
+		</div>
+	</div>
+</form>
+
+@{
+	var previousPage = Model.CurrentPage - 1;
+	if (previousPage < 1)
+	{
+	previousPage = 1;
+	}
+
+	var maxPage = Math.Ceiling((double)Model.TotalWarehouses / WarehouseSearchQueryModel.WarehousesPerPage);
+	var nextPage = Model.CurrentPage + 1;
+	if (nextPage > maxPage - 1)
+	{
+	nextPage = (int)maxPage;
+	}
+}
+
+<div class="row">
+	<div class="offset-md-1 col-md-10 offset-xl-1 col-xl-10 col-sm-12">
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">All warehouses</h3>
+			</div>
+			<div class="card-body">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th style="width: 100px">Warehouse Code</th>
+							<th style="width: 200px">Name</th>
+							<th style="width: 400px">Address</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var warehouse in Model.Warehouses)
+						{
+							<tr>
+								<td>@warehouse.WarehouseCode</td>
+								<td>@warehouse.Name</td>
+								<td>@warehouse.Address</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+
+			<div class="card-footer clearfix">
+				<div class="row">
+					<div class="col-md-6">
+						<a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+						   asp-controller="Warehouse"
+						   asp-action="All"
+						   asp-route-currentPage="@previousPage"
+						   asp-route-date="@Model.SearchTerm")">Prev</a>
+					</div>
+					<div class="col-md-6">
+						<a class="btn btn-primary float-right @(Model.CurrentPage == maxPage ? "disabled" : string.Empty)"
+						   asp-controller="Warehouse"
+						   asp-action="All"
+						   asp-route-currentPage="@nextPage"
+						   asp-route-date="@Model.SearchTerm">Next</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
