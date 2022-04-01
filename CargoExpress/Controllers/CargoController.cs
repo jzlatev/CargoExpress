@@ -45,7 +45,7 @@ namespace CargoExpress.Controllers
 
         public IActionResult All([FromQuery]CargoSearchQueryModel query)
         {
-            (query.Cargos,query.TotalCargo) = cargoService.All(query.SearchTerm, query.Sorting, query.CurrentPage);
+            (query.Cargos, query.TotalCargo) = cargoService.All(query.SearchTerm, query.Sorting, query.CurrentPage);
 
             return View(query);
         }

@@ -40,7 +40,14 @@
 				return View(model);
 			}
 
-			return RedirectToAction("All", "Cargo");
+			return RedirectToAction(nameof(All));
+        }
+
+		public IActionResult All([FromQuery]DeliverySearchQueryModel query)
+        {
+			(query.Deliveries, query.TotalDeliveries) = deliveryService.All(query.SearchTerm, query.Sorting, query.CurrentPage);
+
+			return View(query);
         }
     }
 }

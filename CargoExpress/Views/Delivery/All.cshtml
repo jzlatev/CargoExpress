@@ -1,7 +1,7 @@
-﻿@model CargoSearchQueryModel
+﻿@model DeliverySearchQueryModel
 
 @{
-	ViewData["Title"] = "All cargos";
+	ViewData["Title"] = "All deliveries";
 }
 
 <form method="get">
@@ -15,16 +15,14 @@
 		<div class="form-group col-md-4">
 			<label asp-for="Sorting" class="form-label"></label>
 			<select asp-for="Sorting" class="form-control">
-				<option value="0" selected>Date</option>
-				<option value="1">Weight</option>
-				<option value="2">Type</option>
-				<option value="3">Name</option>
+				<option value="0" selected>Date of create</option>
+				<option value="1">Date of pick</option>
+				<option value="2">Date of delivery</option>
 			</select>
 		</div>
 		<div class="form-group col-md-3">
 			<input type="submit" class="btn btn-primary d-none" value="Search" />
 		</div>
-		
 	</div>
 </form>
 
@@ -35,39 +33,52 @@
 		previousPage = 1;
 	}
 
-	var maxPage = Math.Ceiling((double)Model.TotalCargo / CargoSearchQueryModel.CargosPerPage);
+	var maxPage = Math.Ceiling((double)Model.TotalDeliveries / DeliverySearchQueryModel.DeliveriesPerPage);
+	var nextPage = Model.CurrentPage + 1;
+	if(nextPage > maxPage - 1)
+	{
+		nextPage = (int)maxPage;
+	}
 }
 
 <div class="row">
 	<div class="offset-md-1 col-md-10 offset-xl-1 col-xl-10 col-sm-12">
 		<div class="card">
 			<div class="card-header">
-				<h3 class="card-title">All cargos</h3>
+				<h3 class="card-title">All deliveries</h3>
 			</div>
 			<div class="card-body">
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<th style="width: 120px">Referent Number</th>
-							<th style="width: 120px">Date</th>
-							<th style="width: 300px">Name</th>
-							<th style="width: 100px">Weight</th>
-							<th style="width: 15px">Dangerous</th>
-							<th>Description</th>
-							<th style="width: 100px">Status</th>
+							<th style="width: 70px">Delivery reference</th>
+							<th style="width: 70px">Cargo reference</th>
+							<th style="width: 170px">Cargo name</th>
+							<th style="width: 50px">Cargo weight</th>
+							<th style="width: 60px">Created date</th>
+							<th style="width: 70px">Pick date</th>
+							<th style="width: 60px">Delivery date</th>
+							<th style="width: 60px">Pick warehouse</th>
+							<th style="width: 210px">Pick address</th>
+							<th style="width: 60px">Delivery warehouse</th>
+							<th style="width: 210px">Delivery address</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var cargo in Model.Cargos)
+						@foreach (var delivery in Model.Deliveries)
 						{
 							<tr>
-								<td>@cargo.CargoRef</td>
-								<td>@cargo.CreatedAt</td>
-								<td>@cargo.Name</td>
-								<td>@cargo.Weight</td>
-								<td>@cargo.IsDangerous</td>
-								<td>@cargo.Description</td>
-								<td>@cargo.Status</td>
+								<td>@delivery.DeliveryRef</td>
+								<td>Cargo reference</td>
+								<td>Cargo name</td>
+								<td>Cargo weight</td>
+								<td>@delivery.CreatedAt</td>
+								<td>@delivery.PickedAt</td>
+								<td>@delivery.DeliveredAt</td>
+								<td>@delivery.PickWarehouseId</td>
+								<td>@delivery.PickAddress</td>
+								<td>@delivery.DeliveryWarehouseId</td>
+								<td>@delivery.DeliveryAddress</td>
 							</tr>
 						}
 					</tbody>
@@ -79,7 +90,7 @@
 					<div class="col-md-6">
 						<a 
 						class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)" 
-						asp-controller="Cargo" 
+						asp-controller="Delivery" 
 						asp-action="All" 
 						asp-route-currentPage="@previousPage"
 						asp-route-date="@Model.SearchTerm"
@@ -88,9 +99,9 @@
 					<div class="col-md-6">
 						<a 
 						class="btn btn-primary float-right @(Model.CurrentPage == maxPage ? "disabled" : string.Empty)"
-						asp-controller="Cargo" 
+						asp-controller="Delivery" 
 						asp-action="All"
-						asp-route-currentPage="@(Model.CurrentPage + 1)"
+						asp-route-currentPage="@nextPage"
 						asp-route-date="@Model.SearchTerm"
 						asp-route-model="@((int)Model.Sorting)">Next</a>
 					</div>
@@ -105,6 +116,3 @@
 		ev.target.closest('form').submit()
 	})
 </script>
-
-
-

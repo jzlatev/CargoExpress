@@ -16,6 +16,6 @@
 
         public string? IsDangerous { get; set; }
 
-        public string Status { get; set; }
+        public string? Status { get; set; }
     }
 }

@@ -10,6 +10,7 @@
         [Display(Name = "Search by word or text")]
         public string? SearchTerm { get; set; }
 
+        [Display(Name = "Sorting by")]
         public CargoSorting Sorting { get; set; }
 
         public int CurrentPage { get; set; } = 1;

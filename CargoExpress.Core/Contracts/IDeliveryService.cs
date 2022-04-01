@@ -1,10 +1,13 @@
 ﻿namespace CargoExpress.Core.Contracts
 {
 	using CargoExpress.Core.Models;
-	using System.Security.Claims;
+    using CargoExpress.Core.Models.Enums;
+    using System.Security.Claims;
 
 	public interface IDeliveryService
     {
         Task Create(DeliveryCreateViewModel model, ClaimsPrincipal user);
+
+        public (IEnumerable<DeliveryAllViewModel>, int totalDeliveries) All(string searchTerm, DeliverySorting deliverySorting, int currentPage);
     }
 }
