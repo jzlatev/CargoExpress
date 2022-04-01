@@ -1,6 +1,5 @@
 ﻿using CargoExpress.Core.Contracts;
 using CargoExpress.Core.Models;
-using CargoExpress.Core.Models.Enums;
 using CargoExpress.Infrastructure.Data.Models;
 using CargoExpress.Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;

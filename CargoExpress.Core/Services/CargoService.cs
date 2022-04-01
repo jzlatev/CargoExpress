@@ -58,7 +58,7 @@ namespace CargoExpress.Core.Services
             return (allCargosCurrentPage, totalNumCargo);
         }
 
-        public async Task Create(CargoCreateViewModel model)
+        public Task Create(CargoCreateViewModel model)
         {
             Cargo cargo = new Cargo
             {
@@ -72,11 +72,13 @@ namespace CargoExpress.Core.Services
 
             try
             {
-                await repo.AddAsync(cargo);
+                repo.AddAsync(cargo);
                 repo.SaveChanges();
             }
             catch (InvalidOperationException)
             {}
+
+            return Task.CompletedTask;
         }
     }
 }

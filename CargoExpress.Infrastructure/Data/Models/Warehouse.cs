@@ -8,6 +8,10 @@ namespace CargoExpress.Infrastructure.Data.Models
         public Guid Id { get; set; } = new Guid();
 
         [Required]
+        [MaxLength(10)]
+        public string? WarehouseCode { get; set; }
+
+        [Required]
         [MaxLength(50)]
         public string? Name { get; set; }
 

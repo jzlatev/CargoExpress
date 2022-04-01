@@ -25,6 +25,10 @@ namespace CargoExpress.Infrastructure.Data
             builder.Entity<Delivery>()
                 .HasIndex(d => d.DeliveryRef)
                 .IsUnique();
+
+            builder.Entity<Warehouse>()
+                .HasIndex(w => w.WarehouseCode)
+                .IsUnique();
         }
 
         public DbSet<Cargo> Cargos { get; set; }
