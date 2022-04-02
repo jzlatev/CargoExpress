@@ -5,7 +5,7 @@ namespace CargoExpress.Infrastructure.Data.Models
     public class Driver
     {
         [Key]
-        public Guid Id { get; set; } = new Guid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(35)]
@@ -20,9 +20,8 @@ namespace CargoExpress.Infrastructure.Data.Models
         public string? LastName { get; set; }
 
         [Required]
-        [MinLength(10)]
         [MaxLength(10)]
-        public int EGN { get; set; }
+        public string? EGN { get; set; }
 
         public Truck? Truck { get; set; }
     }
