@@ -61,7 +61,7 @@
             return (deliveries, totalDeliveries);
         }
 
-        public async Task Create(DeliveryCreateViewModel model, ClaimsPrincipal user)
+        public Task Create(DeliveryCreateViewModel model, ClaimsPrincipal user)
         {
             var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -77,8 +77,8 @@
             };
 
             var deliveryRef = delivery.DeliveryRef;
-            bool isExist = repo.All<Delivery>()
-                .Any(d => d.DeliveryRef == deliveryRef);
+            bool isExist = repo.All<Delivery>().Any(d => d.DeliveryRef == deliveryRef);
+            
             if (isExist)
             {
                 throw new InvalidOperationException("The delivery exists.");
@@ -86,11 +86,13 @@
 
             try
             {
-                await repo.AddAsync(delivery);
+                repo.AddAsync(delivery);
                 repo.SaveChanges();
             }
             catch (InvalidOperationException)
             { }
+
+            return Task.CompletedTask;
         }
     }
 }

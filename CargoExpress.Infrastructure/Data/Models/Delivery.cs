@@ -6,10 +6,10 @@ namespace CargoExpress.Infrastructure.Data.Models
     public class Delivery
     {
         [Key]
-        public Guid Id { get; set; } = new Guid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [MaxLength(20)]
+        [MaxLength(38)]
         public string? DeliveryRef { get; set; } = Guid.NewGuid().ToString();
 
         [Required]

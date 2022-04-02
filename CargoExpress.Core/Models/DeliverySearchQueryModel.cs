@@ -5,7 +5,7 @@
 
     public class DeliverySearchQueryModel
     {
-        public const int DeliveriesPerPage = 1;
+        public const int DeliveriesPerPage = 10;
 
         [Display(Name = "Search by word or text")]
         public string SearchTerm { get; set; }

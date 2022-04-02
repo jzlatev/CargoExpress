@@ -47,7 +47,7 @@
                 return View(model);
             }
 
-            return RedirectToAction("All", "Cargo");
+            return RedirectToAction(nameof(All));
         }
     }
 }
