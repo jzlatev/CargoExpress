@@ -10,10 +10,11 @@
         [Display(Name = "Plate number")]
         public string? PlateNumber { get; set; }
 
-        [Required]
         [Display(Name = "Driver")]
         public Guid? DriverId { get; set; }
 
+        public Dictionary<string, string>? AvailableDrivers { get; set; }
+   
         [Required]
         [Display(Name = "Is busy")]
         public bool IsBusy { get; set; }

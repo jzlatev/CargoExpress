@@ -1,6 +1,7 @@
 ﻿namespace CargoExpress.Core.Services
 {
     using CargoExpress.Core.Contracts;
+    using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using CargoExpress.Infrastructure.Data.Models;
     using CargoExpress.Infrastructure.Data.Repositories;
@@ -56,11 +57,15 @@
                 DriverId = model.DriverId
             };
 
-            bool isExist = repo.All<Truck>().Any(d => d.PlateNumber == model.PlateNumber);
-
-            if (isExist)
+            if(repo.All<Truck>().Any(t => t.DriverId == model.DriverId) && model.DriverId!=null)
             {
-                throw new InvalidOperationException("The truck exists.");
+                throw new FormException("DriverId","The driver is busy.");
+            }
+
+
+            if (repo.All<Truck>().Any(d => d.PlateNumber == model.PlateNumber))
+            {
+                throw new FormException("PlateNumber","The truck exists.");
             }
 
             try
@@ -73,5 +78,20 @@
 
             return Task.CompletedTask;
         }
+
+        public void PopulateAvailableDrivers(TruckCreateViewModel model)
+        {
+            var drivers = repo.All<Driver>().Select(d => d).ToList();
+            Dictionary<string, string> availableDrivers = new Dictionary<string, string>();
+            foreach(var driver in drivers)
+            {
+                availableDrivers.Add(driver.Id.ToString(), String.Concat(driver.FirstName, " ", driver.LastName));
+            }
+
+
+            model.AvailableDrivers = availableDrivers;
+        }
     }
+
+
 }

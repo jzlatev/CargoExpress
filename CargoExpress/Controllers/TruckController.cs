@@ -1,8 +1,10 @@
 ﻿namespace CargoExpress.Controllers
 {
     using CargoExpress.Core.Contracts;
+    using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using Microsoft.AspNetCore.Mvc;
+    using System.Collections.Generic;
 
     public class TruckController : BaseController
     {
@@ -22,12 +24,17 @@
 
         public IActionResult Create()
         {
-            return View();
+            var model = new TruckCreateViewModel();
+            truckService.PopulateAvailableDrivers(model);
+
+            return View(model);
         }
 
         [HttpPost]
         public IActionResult Create(TruckCreateViewModel model)
         {
+            truckService.PopulateAvailableDrivers(model);
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -37,9 +44,10 @@
             {
                 this.truckService.Create(model);
             }
-            catch (InvalidOperationException ioe)
+            catch (FormException e)
             {
-                this.ModelState.AddModelError(nameof(model.PlateNumber), ioe.Message);
+                this.ModelState.AddModelError(e.InputName,e.ErrorMessage);
+
             }
 
             if (!ModelState.IsValid)
@@ -47,7 +55,7 @@
                 return View(model);
             }
 
-            return RedirectToAction("All", "Cargo");
+            return RedirectToAction(nameof(All));
         }
     }
 }

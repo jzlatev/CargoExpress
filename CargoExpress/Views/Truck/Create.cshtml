@@ -33,11 +33,23 @@
 									name="IsBusy" 
 									type="checkbox" />
 						</div>
-						<div class="form-group">
+						@*<div class="form-group">
 							<label asp-for="DriverId" class="form-label"></label>
 							<input asp-for="DriverId" class="form-control" aria-required="true" />
 							<span asp-validation-for="DriverId" class="text-danger"></span>
-						</div>
+						</div>*@
+						<label asp-for="DriverId" class="form-label"></label>
+						@*<select asp-for="DriverId" class="form-control custom-select" asp-items="Model"></select>*@
+						@if (Model.AvailableDrivers!=null){
+						<select asp-for="DriverId" class="form-control custom-select">
+							<option value=""> - </option>
+							@foreach (var driver in Model.AvailableDrivers)
+								{
+									<option value="@driver.Key">@driver.Value</option>
+								}
+						</select>
+						<span asp-validation-for="DriverId" class="text-danger"></span>
+						}
 					</div>
 					<div class="card-footer">
 						<a href="/" class="btn btn-secondary">Cancel</a>
