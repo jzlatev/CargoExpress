@@ -13,6 +13,13 @@
             this.driverService = _driverService;
         }
 
+        public ActionResult All([FromQuery] DriverSearchQueryModel query)
+        {
+            (query.Drivers, query.TotalDrivers) = driverService.All(query.SearchTerm, query.CurrentPage);
+
+            return View(query);
+        }
+
         public IActionResult Create()
         {
             return View();
