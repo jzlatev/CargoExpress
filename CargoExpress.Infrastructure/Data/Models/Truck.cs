@@ -6,10 +6,9 @@ namespace CargoExpress.Infrastructure.Data.Models
     public class Truck
     {
         [Key]
-        public Guid Id { get; set; } = new Guid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [MinLength(8)]
         [MaxLength(8)]
         public string? PlateNumber { get; set; }
 

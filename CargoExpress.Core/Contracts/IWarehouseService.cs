@@ -4,7 +4,7 @@
 
     public interface IWarehouseService
     {
-       Task Create(WarehouseCreateViewModel model);
+        Task Create(WarehouseCreateViewModel model);
 
         public (IEnumerable<WarehouseAllViewModel>, int totalWarehouses) All(string searchTerm, int currentPage);
     }

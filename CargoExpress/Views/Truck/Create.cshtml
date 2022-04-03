@@ -1,0 +1,54 @@
+﻿@model TruckCreateViewModel
+
+@{
+	ViewData["Title"] = "Create truck";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>@ViewData["Title"]</title>
+</head>
+<body>
+	<section class="content">
+		<form id="createTruck" method="post">
+			<div class="offset-md-4 col-md-4 offset-xl-4 col-xl-4 col-sm-12">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="card card-primary">
+					<div class="card-header">
+						<h3 class="card-title">Create</h3>
+					</div>
+					<div class="card-body" style="display: block;">
+						<div class="form-group">
+							<label asp-for="PlateNumber" class="form-label"></label>
+							<input asp-for="PlateNumber" class="form-control" aria-required="true" />
+							<span asp-validation-for="PlateNumber" class="text-danger"></span>
+						</div>
+						<div class="form-group">
+							<label asp-for="IsBusy" class="form-label"></label>
+							<input asp-for="IsBusy"
+									id="IsBusy" 
+									name="IsBusy" 
+									type="checkbox" />
+						</div>
+						<div class="form-group">
+							<label asp-for="DriverId" class="form-label"></label>
+							<input asp-for="DriverId" class="form-control" aria-required="true" />
+							<span asp-validation-for="DriverId" class="text-danger"></span>
+						</div>
+					</div>
+					<div class="card-footer">
+						<a href="/" class="btn btn-secondary">Cancel</a>
+						<input type="submit" value="Create" class="btn btn-success float-right">
+					</div>
+				</div>
+			</div>
+		</form>
+	</section>
+	<!-- jQuery -->
+	<script src="~/plugins/jquery/jquery.min.js"></script>
+	<partial name="_ValidationScriptsPartial" />
+</body>
+</html>

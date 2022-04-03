@@ -7,7 +7,7 @@ namespace CargoExpress.Infrastructure.Data.Models
     public class Cargo
     {
         [Key]
-        public Guid Id { get; set; } = new Guid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(20)]

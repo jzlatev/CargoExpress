@@ -4,7 +4,7 @@
 
     public class WarehouseSearchQueryModel
     {
-        public const int WarehousesPerPage = 2;
+        public const int WarehousesPerPage = 10;
 
         [Display(Name = "Search by word or text")]
         public string SearchTerm { get; set; }
