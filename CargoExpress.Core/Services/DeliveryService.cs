@@ -1,6 +1,7 @@
 ﻿namespace CargoExpress.Core.Services
 {
     using CargoExpress.Core.Contracts;
+    using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using CargoExpress.Core.Models.Enums;
     using CargoExpress.Infrastructure.Data.Models;
@@ -77,11 +78,21 @@
             };
 
             var deliveryRef = delivery.DeliveryRef;
-            bool isExist = repo.All<Delivery>().Any(d => d.DeliveryRef == deliveryRef);
+            //bool isExist = repo.All<Delivery>().Any(d => d.DeliveryRef == deliveryRef);
             
-            if (isExist)
+            //if (isExist)
+            //{
+            //    throw new InvalidOperationException("The delivery exists.");
+            //}
+
+            if (repo.All<Delivery>().Any(d => d.DeliveryRef == deliveryRef) && deliveryRef != null)
             {
-                throw new InvalidOperationException("The delivery exists.");
+                throw new FormException(nameof(model.PickedAt), "The delivery exists.");
+            }
+
+            if (delivery.PickWarehouseId == delivery.DeliveryWarehouseId)
+            {
+                throw new FormException(nameof(model.DeliveryWarehouseId), "The loading warehouse coincides with the delivery warehouse.");
             }
 
             try
@@ -93,6 +104,19 @@
             { }
 
             return Task.CompletedTask;
+        }
+
+        public void PopulateWarehouse(DeliveryCreateViewModel model)
+        {
+            var warehouses = repo.All<Warehouse>().Select(w => w).ToList();
+            Dictionary<string, string> availableWarehouses = new Dictionary<string, string>();
+
+            foreach (var warehouse in warehouses)
+            {
+                availableWarehouses.Add(warehouse.Id.ToString(), warehouse.Name);
+            }
+
+            model.WarehouseNames = availableWarehouses;
         }
     }
 }

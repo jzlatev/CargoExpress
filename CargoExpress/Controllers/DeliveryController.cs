@@ -1,6 +1,7 @@
 ﻿namespace CargoExpress.Controllers
 {
     using CargoExpress.Core.Contracts;
+    using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,15 @@
         public DeliveryController(IDeliveryService _deliveryService)
 		{
 			this.deliveryService = _deliveryService;
+			this.EntityName = "Delivery";
         }
 
 		public IActionResult Create()
 		{
-			return View();
+			var model = new DeliveryCreateViewModel();
+			deliveryService.PopulateWarehouse(model);
+
+			return View(model);
 		}
 
 		[HttpPost]
@@ -30,17 +35,18 @@
             {
 			    this.deliveryService.Create(model, User);
             }
-            catch (InvalidOperationException ioe)
+            catch (FormException e)
             {
-				this.ModelState.AddModelError(nameof(model.PickedAt), ioe.Message);
+				this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
             }
 
 			if (!ModelState.IsValid)
 			{
+				deliveryService.PopulateWarehouse(model);
 				return View(model);
 			}
 
-			return RedirectToAction(nameof(All));
+			return RedirectToList();
         }
 
 		public IActionResult All([FromQuery]DeliverySearchQueryModel query)

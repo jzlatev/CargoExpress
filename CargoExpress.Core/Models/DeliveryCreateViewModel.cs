@@ -26,10 +26,11 @@
         /// <summary>
         /// Warehouse of cargo
         /// </summary>
-        [MinLength(36, ErrorMessage = "The minimum length must be 36 symbols!")]
-        [MaxLength(36, ErrorMessage = "The maximum length must be 36 symbols!")]
+        [Required]
         [Display(Name = "Loading warehouse number")]
         public Guid? PickWarehouseId { get; set; }
+
+        public Dictionary<string, string>? WarehouseNames { get; set; }
 
         /// <summary>
         /// Loading address
@@ -40,11 +41,12 @@
 
         /// <summary>
         /// Delivery warehouse
-        /// </summary>=
-        [MinLength(36, ErrorMessage = "The minimum length must be 36 symbols!")]
-        [MaxLength(36, ErrorMessage = "The maximum length must be 36 symbols!")]
+        /// </summary>
+        [Required]
         [Display(Name = "Delivery warehouse number")]
         public Guid? DeliveryWarehouseId { get; set; }
+
+        public Dictionary<string, string>? DeliveryWHouseNames { get; set; }
 
         /// <summary>
         /// Delivery address

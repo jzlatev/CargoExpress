@@ -9,5 +9,7 @@
         Task Create(DeliveryCreateViewModel model, ClaimsPrincipal user);
 
         public (IEnumerable<DeliveryAllViewModel>, int totalDeliveries) All(string searchTerm, DeliverySorting deliverySorting, int currentPage);
+
+        void PopulateWarehouse(DeliveryCreateViewModel model);
     }
 }
