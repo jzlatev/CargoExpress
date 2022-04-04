@@ -4,7 +4,6 @@
     using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
 
     public class TruckController : BaseController
     {
@@ -13,6 +12,7 @@
         public TruckController(ITruckService _truckService)
         {
             this.truckService = _truckService;
+            this.EntityName = "Truck";
         }
 
         public IActionResult All([FromQuery]TruckSearchQueryModel query)
@@ -46,7 +46,7 @@
             }
             catch (FormException e)
             {
-                this.ModelState.AddModelError(e.InputName,e.ErrorMessage);
+                this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
 
             }
 
@@ -55,7 +55,85 @@
                 return View(model);
             }
 
-            return RedirectToAction(nameof(All));
+            return RedirectToList();
+        }
+
+        public IActionResult Edit([FromQuery] string guid)
+        {
+            TruckCreateViewModel? model = null;
+
+            try
+            {
+                model = truckService.GetTruckViewModelByGuid(new Guid(guid));
+            }
+            catch (FormException e)
+            {
+                this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
+
+            }
+            catch (Exception)
+            {
+                return RedirectToList();
+            }
+
+
+            if (model == null)
+            {
+                return RedirectToList();
+            }
+
+            truckService.PopulateAvailableDrivers(model);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit([FromQuery] string guid, TruckCreateViewModel model)
+        {
+            
+            truckService.PopulateAvailableDrivers(model);
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                this.truckService.Edit(new Guid(guid), model);
+            }
+            catch (FormException e)
+            {
+                this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
+
+            }
+            catch (Exception e)
+            {
+                return RedirectToList();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return RedirectToList();
+        }
+
+        [HttpPost]
+        public IActionResult Delete([FromQuery] string guid)
+        {
+            //TruckCreateViewModel? model = null;
+
+            try
+            {
+                truckService.Delete(new Guid(guid));
+            }
+            catch (Exception)
+            {
+            }
+
+            return RedirectToList();
         }
     }
 }

@@ -46,6 +46,7 @@
 							<th style="width: 60px">Plate Number</th>
 							<th style="width: 250px">Driver Name</th>
 							<th style="width: 20px">Is Busy</th>
+							<th style="width: 10px"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -55,6 +56,14 @@
 								<td>@truck.PlateNumber</td>
 								<td>@truck.DriverName</td>
 								<td>@truck.IsBusy</td>
+								<td class="text-center">
+								<a class="btn btn-primary btn-sm mr-2" asp-area="" asp-controller="Truck" asp-action="Edit" asp-route-guid="@truck.Id.ToString()">
+									<i class="fas fa-pen"></i>
+								</a>
+								<a class="btn btn-danger btn-sm" asp-area="" asp-controller="Truck" asp-action="Delete" asp-route-guid="@truck.Id.ToString()" data-list-action-send-post>
+									<i class="fas fa-trash"></i>
+								</a>
+								</td>
 							</tr>
 						}
 					</tbody>

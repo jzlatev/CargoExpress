@@ -119,5 +119,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	<!-- AdminLTE App -->
 	<script src="~/js/adminlte.min.js"></script>
 	@await RenderSectionAsync("Scripts", false)
+	<script>
+		document.querySelectorAll('[data-list-action-send-post]').forEach(el => {
+			el.addEventListener('click',ev => {
+				ev.preventDefault()
+				if (confirm("Are you sure")) {
+					fetch(el.href, {
+					  method: 'POST',
+					})
+					.then(e => {
+						location.reload()
+					})
+					.catch(e => {
+						location.reload()
+					})
+				}
+			})
+		})
+	</script>
 </body>
 </html>

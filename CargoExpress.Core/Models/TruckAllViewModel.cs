@@ -2,6 +2,8 @@
 {
     public class TruckAllViewModel
     {
+        public Guid Id { get; set; }
+
         public string? PlateNumber { get; set; }
 
         public Guid? DriverId { get; set; }

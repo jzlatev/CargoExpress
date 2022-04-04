@@ -38,6 +38,7 @@
                 .Take(TruckSearchQueryModel.TrucksPerPage)
                 .Select(t => new TruckAllViewModel
                 {
+                    Id = t.Id,
                     PlateNumber = t.PlateNumber,
                     DriverId = t.DriverId,
                     DriverName = t.Driver.FirstName + ' ' + t.Driver.LastName,
@@ -57,15 +58,15 @@
                 DriverId = model.DriverId
             };
 
-            if(repo.All<Truck>().Any(t => t.DriverId == model.DriverId) && model.DriverId!=null)
+            if (repo.All<Truck>().Any(t => t.DriverId == model.DriverId) && model.DriverId != null)
             {
-                throw new FormException("DriverId","The driver is busy.");
+                throw new FormException("DriverId", "The driver is busy.");
             }
 
 
             if (repo.All<Truck>().Any(d => d.PlateNumber == model.PlateNumber))
             {
-                throw new FormException("PlateNumber","The truck exists.");
+                throw new FormException("PlateNumber", "The truck exists.");
             }
 
             try
@@ -79,15 +80,73 @@
             return Task.CompletedTask;
         }
 
+        public void Delete(Guid guid)
+        {
+            Truck? truck = repo.All<Truck>()
+                .Where(t => t.Id == guid)
+                .ToList().FirstOrDefault();
+
+            repo.Delete(truck);
+
+            repo.SaveChanges();
+        }
+
+        public void Edit(Guid guid, TruckCreateViewModel model)
+        {
+            Truck? truck = repo.All<Truck>()
+                .Where(t => t.Id == guid)
+                .ToList().FirstOrDefault();
+
+            if (truck == null)
+            {
+                throw new Exception();
+            }
+
+            if (repo.All<Truck>().Any(t => (t.DriverId == model.DriverId && t.Id!=guid)) && model.DriverId != null )
+            {
+                throw new FormException("DriverId", "The driver is busy.");
+            }
+
+
+            if (repo.All<Truck>().Any(d => (d.PlateNumber == model.PlateNumber && d.Id != guid)))
+            {
+                throw new FormException("PlateNumber", "The truck exists.");
+            }
+
+            truck.PlateNumber = model.PlateNumber;
+            truck.DriverId = model.DriverId;
+
+            repo.SaveChanges();
+        }
+
+        public TruckCreateViewModel? GetTruckViewModelByGuid(Guid guid)
+        {
+            var truckList = repo.All<Truck>()
+                .Where(t => t.Id == guid)
+                .Select(t => new TruckCreateViewModel
+                {
+                    PlateNumber = t.PlateNumber,
+                    DriverId = t.DriverId,
+                })
+                .ToList();
+
+            if (truckList.Count == 0)
+            {
+                return null;
+            }
+
+            return truckList.First();
+        }
+
         public void PopulateAvailableDrivers(TruckCreateViewModel model)
         {
             var drivers = repo.All<Driver>().Select(d => d).ToList();
             Dictionary<string, string> availableDrivers = new Dictionary<string, string>();
-            foreach(var driver in drivers)
+            
+            foreach (var driver in drivers)
             {
                 availableDrivers.Add(driver.Id.ToString(), String.Concat(driver.FirstName, " ", driver.LastName));
             }
-
 
             model.AvailableDrivers = availableDrivers;
         }
