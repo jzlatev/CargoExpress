@@ -1,4 +1,5 @@
 ﻿using CargoExpress.Core.Contracts;
+using CargoExpress.Core.Exceptions;
 using CargoExpress.Core.Models;
 using CargoExpress.Core.Models.Enums;
 using CargoExpress.Infrastructure.Data.Models;
@@ -24,7 +25,7 @@ namespace CargoExpress.Core.Services
                 cargoQuery = cargoQuery.Where(c => 
                 c.Name.ToLower().Contains(searchTerm.ToLower()) ||
                 c.Description.ToLower().Contains(searchTerm.ToLower()) ||
-                c.CargoRef.ToLower().Contains(searchTerm.ToLower()));
+                c.CargoRef.ToString().ToLower().Contains(searchTerm.ToLower()));
             }
 
             cargoQuery = sorting switch
@@ -33,7 +34,7 @@ namespace CargoExpress.Core.Services
                 CargoSorting.Name => cargoQuery.OrderByDescending(n => n.Name),
                 CargoSorting.Weight => cargoQuery.OrderByDescending(w => w.Weight),
                 CargoSorting.Type => cargoQuery.OrderByDescending(t => t.IsDangerous),
-                _ => cargoQuery.OrderByDescending(r => r.CargoRef)
+                _ => cargoQuery.OrderByDescending(r => r.CreatedAt)
             };
 
             var totalNumCargo = cargoQuery.Count();
@@ -62,13 +63,18 @@ namespace CargoExpress.Core.Services
         {
             Cargo cargo = new Cargo
             {
-                CargoRef = model.CargoRef,
                 Name = model.Name,
                 Weight = model.Weight,
                 Description = model.Description,
-                IsDangerous = model.IsDangerous,
-                CreatedAt = DateTime.Now
+                IsDangerous = model.IsDangerous
             };
+
+            var cargoRef = cargo.CargoRef;
+
+            if (repo.All<Cargo>().Any(c => c.CargoRef == cargoRef) && cargoRef != null)
+            {
+                throw new FormException(nameof(cargo.CargoRef), "The delivery exists.");
+            }
 
             try
             {
@@ -76,9 +82,64 @@ namespace CargoExpress.Core.Services
                 repo.SaveChanges();
             }
             catch (InvalidOperationException)
-            {}
+            { }
 
             return Task.CompletedTask;
+        }
+
+        public void Delete(Guid guid)
+        {
+            Cargo? cargo = repo.All<Cargo>()
+                .Where(c => c.Id == guid)
+                .ToList()
+                .FirstOrDefault();
+
+            if (cargo != null)
+            {
+                repo.Delete(cargo);
+                repo.SaveChanges();
+            }
+        }
+
+        public void Edit(Guid guid, CargoCreateViewModel model)
+        {
+            Cargo? cargo = repo.All<Cargo>()
+                .Where(c => c.Id == guid)
+                .ToList()
+                .FirstOrDefault();
+
+            if (cargo == null)
+            {
+                throw new Exception();
+            }
+
+            cargo.Name = model.Name;
+            cargo.Weight = model.Weight;
+            cargo.Description = model.Description;
+            cargo.IsDangerous = model.IsDangerous;
+
+            repo.SaveChanges();
+        }
+
+        public CargoCreateViewModel? GetCargoViewModelByGuid(Guid guid)
+        {
+            var cargoList = repo.All<Cargo>()
+                .Where(c => c.Id == guid)
+                .Select(c => new CargoCreateViewModel
+                {
+                    Name = c.Name,
+                    Weight = c.Weight,
+                    Description = c.Description,
+                    IsDangerous = c.IsDangerous
+                })
+                .ToList();
+
+            if (cargoList.Count == 0)
+            {
+                return null;
+            }
+
+            return cargoList.First();
         }
     }
 }

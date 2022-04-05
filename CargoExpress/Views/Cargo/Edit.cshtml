@@ -1,33 +1,24 @@
 ﻿@model CargoCreateViewModel
 
 @{
-	ViewData["Title"] = "Create cargo";
-	//var items = (List<SelectListItem>)ViewBag.TypeItems;
+	ViewData["Title"] = "Edit cargo";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>@ViewData["Title"]</title>
-
-	<!-- Google Font: Source Sans Pro -->
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-	<!-- Font Awesome -->
-	<link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
-	<!-- icheck bootstrap -->
-	<link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-	<!-- Theme style -->
-	<link rel="stylesheet" href="~/css/adminlte.min.css">
 </head>
-<body class="hold-transition">
+<body>
 	<section class="content">
-		<form id="createCargo" method="post">
+		<form id="editCargo" method="post">
 			<div class="offset-md-3 col-md-6 offset-xl-3 col-xl-6 col-sm-12">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 				<div class="card card-primary">
 					<div class="card-header">
-						<h3 class="card-title">Create</h3>
+						<h3 class="card-title">Edit</h3>
 					</div>
 					<div class="card-body" style="display: block;">
 						<div class="form-group">
@@ -42,18 +33,9 @@
 						<div class="form-group">
 							<label asp-for="IsDangerous" class="form-label"></label>
 							<input asp-for="IsDangerous"
-									id="IsDangerous" 
-									name="IsDangerous" 
-									type="checkbox" />
-							@*
-							<label asp-for="IsDangerous" class="form-label"></label>
-							<select asp-for="IsDangerous" class="form-control custom-select" asp-items="@Html.GetEnumSelectList<TypeOfCargoEnum>()"></select>
-							@*<select asp-for="IsDangerous" class="form-control custom-select">
-								@foreach (var category in @Html.GetEnumSelectList<TypeOfCargoEnum>())
-									{
-										<option value="@category.Value">@category.Text</option>
-									}
-							</select>*@
+								   id="IsDangerous"
+								   name="IsDangerous"
+								   type="checkbox" />
 						</div>
 						<div class="form-group">
 							<label asp-for="Weight" class="form-label"></label>
@@ -63,19 +45,12 @@
 					</div>
 					<div class="card-footer">
 						<a href="/" class="btn btn-secondary">Cancel</a>
-						<input type="submit" value="Create" class="btn btn-success float-right">
+						<input type="submit" value="Edit" class="btn btn-success float-right">
 					</div>
 				</div>
 			</div>
-
 		</form>
 	</section>
-	<!-- /.card -->
-	<!-- jQuery -->
-	<script src="~/plugins/jquery/jquery.min.js"></script>
-	<!-- Bootstrap 4 -->
-	<script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-	<!-- AdminLTE App -->
 	<script src="~/js/adminlte.min.js"></script>
 	<partial name="_ValidationScriptsPartial" />
 </body>

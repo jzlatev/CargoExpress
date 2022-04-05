@@ -24,7 +24,6 @@
 		<div class="form-group col-md-3">
 			<input type="submit" class="btn btn-primary d-none" value="Search" />
 		</div>
-		
 	</div>
 </form>
 
@@ -48,13 +47,14 @@
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<th style="width: 120px">Referent Number</th>
-							<th style="width: 120px">Date</th>
+							<th style="width: 130px">Referent Number</th>
+							<th style="width: 80px">Date</th>
 							<th style="width: 300px">Name</th>
-							<th style="width: 100px">Weight</th>
-							<th style="width: 15px">Dangerous</th>
-							<th>Description</th>
-							<th style="width: 100px">Status</th>
+							<th style="width: 80px">Weight</th>
+							<th style="width: 70px">Dangerous</th>
+							<th style="width: 400px">Description</th>
+							<th style="width: 80px">Status</th>
+							<th style="width: 100px"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -67,7 +67,17 @@
 								<td>@cargo.Weight</td>
 								<td>@cargo.IsDangerous</td>
 								<td>@cargo.Description</td>
-								<td>@cargo.Status</td>
+								<td class="text-center">@cargo.Status</td>
+								<td>
+									<div class="row offset-sm-3 offset-md-3 offset-lg-3 offset-xl-3">
+										<a class="btn btn-primary btn-sm mr-1" asp-area="" asp-controller="Cargo" asp-action="Edit" asp-route-guid="@cargo.Id.ToString()">
+											<i class="fas fa-pen"></i>
+										</a>
+										<a class="btn btn-danger btn-sm" asp-area="" asp-controller="Cargo" asp-action="Delete" asp-route-guid="@cargo.Id.ToString()" data-list-action-send-post>
+											<i class="fas fa-trash"></i>
+										</a>
+									</div>
+								</td>
 							</tr>
 						}
 					</tbody>

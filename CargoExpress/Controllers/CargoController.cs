@@ -1,20 +1,19 @@
 ﻿using CargoExpress.Core.Contracts;
+using CargoExpress.Core.Exceptions;
 using CargoExpress.Core.Models;
 using CargoExpress.Infrastructure.Data.Models;
-using CargoExpress.Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CargoExpress.Controllers
 {
     public class CargoController : BaseController
     {
-        private readonly IApplicationDbRepository repo;
         private readonly ICargoService cargoService;
 
-        public CargoController(IApplicationDbRepository _repo, ICargoService _cargoService)
+        public CargoController(ICargoService _cargoService)
         {
-            this.repo = _repo;
             this.cargoService = _cargoService;
+            this.EntityName = "Cargo";
         }
 
         public IActionResult Create()
@@ -25,11 +24,18 @@ namespace CargoExpress.Controllers
         [HttpPost]
         public IActionResult Create(CargoCreateViewModel model)
         {
-            var isExists = this.repo.All<Cargo>().Any(c => c.CargoRef == model.CargoRef);
-
-            if (isExists)
+            if (!ModelState.IsValid)
             {
-                this.ModelState.AddModelError(nameof(model.CargoRef), "The cargo has already been added!");
+                return View(model);
+            }
+
+            try
+            {
+                this.cargoService.Create(model);
+            }
+            catch (FormException e)
+            {
+                this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
             }
 
             if (!ModelState.IsValid)
@@ -37,9 +43,7 @@ namespace CargoExpress.Controllers
                 return View(model);
             }
 
-            this.cargoService.Create(model);
-
-            return RedirectToAction(nameof(All));
+            return RedirectToList();
         }
 
         public IActionResult All([FromQuery]CargoSearchQueryModel query)
@@ -47,6 +51,73 @@ namespace CargoExpress.Controllers
             (query.Cargos, query.TotalCargo) = cargoService.All(query.SearchTerm, query.Sorting, query.CurrentPage);
 
             return View(query);
+        }
+
+        public IActionResult Edit([FromQuery] string guid)
+        {
+            CargoCreateViewModel? model = null;
+
+            try
+            {
+                model = cargoService.GetCargoViewModelByGuid(new Guid(guid));
+            }
+            catch (FormException fe)
+            {
+                this.ModelState.AddModelError(fe.InputName, fe.ErrorMessage);
+            }
+            catch (Exception)
+            {
+                return RedirectToList();
+            }
+
+            if (model == null)
+            {
+                return RedirectToList();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit([FromQuery] string guid, CargoCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                this.cargoService.Edit(new Guid(guid), model);
+            }
+            catch (FormException e)
+            {
+                this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
+            }
+            catch (Exception)
+            {
+                return RedirectToList();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return RedirectToList();
+        }
+
+        [HttpPost]
+        public IActionResult Delete([FromQuery] string guid)
+        {
+            try
+            {
+                cargoService.Delete(new Guid(guid));
+            }
+            catch (Exception)
+            { }
+
+            return RedirectToList();
         }
     }
 }

@@ -10,8 +10,8 @@ namespace CargoExpress.Infrastructure.Data.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        [MaxLength(20)]
-        public string? CargoRef { get; set; }
+        [MaxLength(36)]
+        public Guid? CargoRef { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(50)]
@@ -22,7 +22,7 @@ namespace CargoExpress.Infrastructure.Data.Models
         public float Weight { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         [MaxLength(1000)]
         public string? Description { get; set; }

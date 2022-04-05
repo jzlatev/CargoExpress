@@ -8,14 +8,6 @@ namespace CargoExpress.Core.Models
     public class CargoCreateViewModel
     {
         /// <summary>
-        /// Uniq number of cargo.
-        /// </summary>
-        [Required]
-        [MaxLength(20)]
-        [Display(Name = "Cargo reference")]
-        public string? CargoRef { get; set; }
-
-        /// <summary>
         /// Name of cargo.
         /// </summary>
         [Required]

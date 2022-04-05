@@ -4,7 +4,7 @@
     {
         public string? Id { get; set; }
 
-        public string? CargoRef { get; set; }
+        public Guid? CargoRef { get; set; }
 
         public string? Name { get; set; }
 
