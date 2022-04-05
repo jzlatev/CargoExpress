@@ -55,5 +55,76 @@
 
 			return View(query);
         }
+
+		public IActionResult Edit([FromQuery] string guid)
+        {
+			DeliveryCreateViewModel? model = null;
+
+            try
+            {
+				model = deliveryService.GetDeliveryViewModelByGuid(new Guid(guid));
+				deliveryService.PopulateWarehouse(model);
+            }
+			catch (FormException fe)
+            {
+				this.ModelState.AddModelError(fe.InputName, fe.ErrorMessage);
+            }
+            catch (Exception)
+            {
+				return RedirectToList();
+            }
+
+			if (model == null)
+            {
+				return RedirectToList();
+            }
+
+			return View(model);
+        }
+
+		[HttpPost]
+		public IActionResult Edit([FromQuery] string guid, DeliveryCreateViewModel model)
+        {
+			deliveryService.PopulateWarehouse(model);
+
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+			try
+			{
+				this.deliveryService.Edit(new Guid(guid), model, User);
+			}
+			catch (FormException e)
+			{
+				this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
+			}
+			catch (Exception)
+            {
+				RedirectToList();
+            }
+
+			if (!ModelState.IsValid)
+			{
+				deliveryService.PopulateWarehouse(model);
+				return View(model);
+			}
+
+			return RedirectToList();
+		}
+
+		[HttpPost]
+		public IActionResult Delete([FromQuery] string guid)
+        {
+            try
+            {
+				deliveryService.Delete(new Guid(guid));
+            }
+            catch (Exception)
+            {}
+
+			return RedirectToList();
+        }
     }
 }

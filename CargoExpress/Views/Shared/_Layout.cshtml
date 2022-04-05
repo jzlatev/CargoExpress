@@ -121,7 +121,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	@await RenderSectionAsync("Scripts", false)
 	<script>
 		document.querySelectorAll('[data-list-action-send-post]').forEach(el => {
-			el.addEventListener('click',ev => {
+			el.addEventListener('click', ev => {
 				ev.preventDefault()
 				if (confirm("Are you sure")) {
 					fetch(el.href, {

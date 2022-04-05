@@ -6,7 +6,7 @@
 
 <form method="get">
 	<div class="row mb-3">
-		<div class="form-group col-md-4 offset-md-2">
+		<div class="form-group col-md-4 col-sm-4 col-lg-4 col-xl-4 offset-md-2">
 			<div class="form-group">
 				<label asp-for="SearchTerm" class="form-label"></label>
 				<input asp-for="SearchTerm" class="form-control" placeholder="Text" />
@@ -42,7 +42,7 @@
 }
 
 <div class="row">
-	<div class="offset-md-1 col-md-10 offset-xl-1 col-xl-10 col-sm-12">
+	<div class="col-md-12 col-lg-12 col-xl-12 col-sm-12">
 		<div class="card">
 			<div class="card-header">
 				<h3 class="card-title">All deliveries</h3>
@@ -52,16 +52,17 @@
 					<thead>
 						<tr>
 							<th style="width: 70px">Delivery reference</th>
-							<th style="width: 70px">Cargo reference</th>
-							<th style="width: 170px">Cargo name</th>
-							<th style="width: 50px">Cargo weight</th>
-							<th style="width: 60px">Created date</th>
-							<th style="width: 70px">Pick date</th>
-							<th style="width: 60px">Delivery date</th>
-							<th style="width: 60px">Pick warehouse</th>
-							<th style="width: 210px">Pick address</th>
-							<th style="width: 60px">Delivery warehouse</th>
-							<th style="width: 210px">Delivery address</th>
+							<th style="width: 60px">Cargo reference</th>
+							<th style="width: 150px">Cargo name</th>
+							<th style="width: 80px">Cargo weight</th>
+							<th style="width: 20px">Created date</th>
+							<th style="width: 20px">Pick date</th>
+							<th style="width: 20px">Delivery date</th>
+							<th style="width: 80px">Pick warehouse</th>
+							<th style="width: 190px">Pick address</th>
+							<th style="width: 130px">Delivery warehouse</th>
+							<th style="width: 190px">Delivery address</th>
+							<th style="width: 70px"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -79,6 +80,16 @@
 								<td>@delivery.PickAddress</td>
 								<td>@delivery.DeliveryWarehouseId</td>
 								<td>@delivery.DeliveryAddress</td>
+								<td>
+									<div class="row offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1">
+										<a class="btn btn-primary btn-sm mr-1" asp-area="" asp-controller="Delivery" asp-action="Edit" asp-route-guid="@delivery.Id.ToString()">
+											<i class="fas fa-pen"></i>
+										</a>
+										<a class="btn btn-danger btn-sm" asp-area="" asp-controller="Delivery" asp-action="Delete" asp-route-guid="@delivery.Id.ToString()" data-list-action-send-post>
+											<i class="fas fa-trash"></i>
+										</a>
+									</div>
+								</td>
 							</tr>
 						}
 					</tbody>

@@ -78,12 +78,6 @@
             };
 
             var deliveryRef = delivery.DeliveryRef;
-            //bool isExist = repo.All<Delivery>().Any(d => d.DeliveryRef == deliveryRef);
-            
-            //if (isExist)
-            //{
-            //    throw new InvalidOperationException("The delivery exists.");
-            //}
 
             if (repo.All<Delivery>().Any(d => d.DeliveryRef == deliveryRef) && deliveryRef != null)
             {
@@ -104,6 +98,72 @@
             { }
 
             return Task.CompletedTask;
+        }
+
+        public void Delete(Guid guid)
+        {
+            Delivery? delivery = repo.All<Delivery>()
+                .Where(d => d.Id == guid)
+                .ToList()
+                .FirstOrDefault();
+
+            if (delivery == null)
+            {
+                throw new Exception();
+            }
+
+            repo.Delete(delivery);
+            repo.SaveChanges();
+        }
+
+        public void Edit(Guid guid, DeliveryCreateViewModel model, ClaimsPrincipal user)
+        {
+            Delivery? delivery = repo.All<Delivery>()
+                .Where(d => d.Id == guid)
+                .ToList()
+                .FirstOrDefault();
+
+            if (delivery == null)
+            {
+                throw new Exception();
+            }
+
+            if (model.PickWarehouseId == model.DeliveryWarehouseId)
+            {
+                throw new FormException(nameof(model.DeliveryWarehouseId), "The loading warehouse coincides with the delivery warehouse.");
+            }
+
+            delivery.PickedAt = model.PickedAt;
+            delivery.DeliveredAt = model.DeliveredAt;
+            delivery.PickWarehouseId = model.PickWarehouseId;
+            delivery.PickAddress = model.PickAddress;
+            delivery.DeliveryWarehouseId = model.DeliveryWarehouseId;
+            delivery.DeliveryAddress = model.DeliveryAddress;
+
+            repo.SaveChanges();
+        }
+
+        public DeliveryCreateViewModel? GetDeliveryViewModelByGuid(Guid guid)
+        {
+            var deliveryList = repo.All<Delivery>()
+                .Where(d => d.Id == guid)
+                .Select(d => new DeliveryCreateViewModel
+                {
+                    PickedAt = d.PickedAt,
+                    DeliveredAt = d.DeliveredAt,
+                    PickWarehouseId = d.PickWarehouseId,
+                    PickAddress = d.PickAddress,
+                    DeliveryWarehouseId = d.DeliveryWarehouseId,
+                    DeliveryAddress = d.DeliveryAddress
+                })
+                .ToList();
+
+            if (deliveryList.Count == 0)
+            {
+                return null;
+            }
+
+            return deliveryList.First();
         }
 
         public void PopulateWarehouse(DeliveryCreateViewModel model)
