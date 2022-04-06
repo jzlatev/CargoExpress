@@ -74,6 +74,21 @@
             return Task.CompletedTask;
         }
 
+        public void Delete(Guid guid)
+        {
+            Warehouse? warehouse = repo.All<Warehouse>()
+                .Where(w => w.Id == guid)
+                .FirstOrDefault();
+
+            if (warehouse == null)
+            {
+                throw new Exception();
+            }
+
+            repo.Delete(warehouse);
+            repo.SaveChanges();
+        }
+
         public void Edit(Guid guid, WarehouseCreateViewModel model)
         {
             Warehouse? warehouse = repo.All<Warehouse>()

@@ -4,6 +4,7 @@
     using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.CodeAnalysis.Differencing;
 
     public class WarehouseController : BaseController
     {
@@ -15,7 +16,7 @@
             this.EntityName = "Warehouse";
         }
 
-        public IActionResult All([FromQuery]WarehouseSearchQueryModel query)
+        public IActionResult All([FromQuery] WarehouseSearchQueryModel query)
         {
             (query.Warehouses, query.TotalWarehouses) = warehouseService.All(query.SearchTerm, query.CurrentPage);
 
@@ -98,6 +99,19 @@
             {
                 return View(model);
             }
+
+            return RedirectToList();
+        }
+
+        [HttpPost]
+        public IActionResult Delete([FromQuery] string guid)
+        {
+            try
+            {
+                warehouseService.Delete(new Guid(guid));
+            }
+            catch (Exception)
+            { }
 
             return RedirectToList();
         }

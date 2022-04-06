@@ -12,5 +12,7 @@
         WarehouseCreateViewModel? GetWarehouseViewModelByGuid(Guid guid);
 
         void Edit(Guid guid, WarehouseCreateViewModel model);
+
+        void Delete(Guid guid);
     }
 }
