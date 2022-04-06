@@ -106,5 +106,18 @@
 
             return RedirectToList();
         }
+
+        [HttpPost]
+        public IActionResult Delete([FromQuery] string guid)
+        {
+            try
+            {
+                driverService.Delete(new Guid(guid));
+            }
+            catch (Exception)
+            { }
+            
+            return RedirectToList();
+        }
     }
 }

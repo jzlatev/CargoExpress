@@ -76,6 +76,28 @@
             return Task.CompletedTask;
         }
 
+        public void Delete(Guid guid)
+        {
+            Driver? driver = repo.All<Driver>()
+                .Where(d => d.Id == guid)
+                .FirstOrDefault();
+
+            Truck? truck = repo.All<Truck>()
+                .Where(t => t.DriverId == driver.Id)
+                .FirstOrDefault();
+
+            if (truck != null)
+            {
+                truck.DriverId = null;
+            }
+
+            if (driver != null)
+            {
+                repo.Delete(driver);
+                repo.SaveChanges();
+            }
+        }
+
         public void Edit(Guid guid, DriverCreateViewModel model)
         {
             Driver? driver = repo.All<Driver>()

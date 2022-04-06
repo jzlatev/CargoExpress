@@ -12,5 +12,7 @@
         DriverCreateViewModel? GetDriverViewModelByGuid(Guid guid);
 
         void Edit(Guid guid, DriverCreateViewModel model);
+
+        void Delete(Guid guid);
     }
 }
