@@ -100,6 +100,11 @@
                 throw new Exception();
             }
 
+            if (repo.All<Warehouse>().Any(d => (d.WarehouseCode == model.WarehouseCode && d.Id != guid)))
+            {
+                throw new FormException(nameof(model.WarehouseCode), "The warehouse code exists.");
+            }
+
             warehouse.WarehouseCode = model.WarehouseCode;
             warehouse.Name = model.Name;
             warehouse.Address = model.Address;
