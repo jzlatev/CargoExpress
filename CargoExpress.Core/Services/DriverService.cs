@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using CargoExpress.Core.Contracts;
+    using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using CargoExpress.Infrastructure.Data.Models;
     using CargoExpress.Infrastructure.Data.Repositories;
@@ -37,6 +38,7 @@
                 .OrderBy(d => d.FirstName)
                 .Select(d => new DriverAllViewModel
                 {
+                    Id = d.Id,
                     FirstName = d.FirstName,
                     MiddleName = d.MiddleName,
                     LastName = d.LastName,
@@ -58,10 +60,9 @@
                 
             };
 
-            bool egnExist = repo.All<Driver>().Any(d => d.EGN == model.EGN);
-            if (egnExist)
+            if (repo.All<Driver>().Any(d => d.EGN == model.EGN))
             {
-                throw new InvalidOperationException("The EGN exists.");
+                throw new FormException(nameof(model.EGN), "The EGN exists.");
             }
 
             try
@@ -73,6 +74,51 @@
             { }
 
             return Task.CompletedTask;
+        }
+
+        public void Edit(Guid guid, DriverCreateViewModel model)
+        {
+            Driver? driver = repo.All<Driver>()
+                .Where(d => d.Id == guid)
+                .FirstOrDefault();
+
+            if (driver == null)
+            {
+                throw new Exception();
+            }
+
+            if (repo.All<Driver>().Any(d => d.EGN == model.EGN && d.Id != guid))
+            {
+                throw new FormException(nameof(model.EGN), "The EGN exists.");
+            }
+
+            driver.EGN = model.EGN;
+            driver.FirstName = model.FirstName;
+            driver.MiddleName = model.MiddleName;
+            driver.LastName = model.LastName;
+
+            repo.SaveChanges();
+        }
+
+        public DriverCreateViewModel? GetDriverViewModelByGuid(Guid guid)
+        {
+            var driverList = repo.All<Driver>()
+                .Where(d => d.Id == guid)
+                .Select(d => new DriverCreateViewModel
+                { 
+                    EGN = d.EGN,
+                    FirstName = d.FirstName,
+                    MiddleName= d.MiddleName,
+                    LastName= d.LastName
+                })
+                .ToList();
+
+            if (driverList.Count == 0)
+            {
+                return null;
+            }
+
+            return driverList.First();
         }
     }
 }

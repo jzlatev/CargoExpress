@@ -43,20 +43,29 @@
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<th style="width: 100px">First Name</th>
-							<th style="width: 100px">Middle Name</th>
-							<th style="width: 100px">Last Name</th>
-							<th style="width: 100px">EGN</th>
+							<th style="width: 7px">EGN</th>
+							<th>First Name</th>
+							<th>Middle Name</th>
+							<th>Last Name</th>
+							<th style="width: 100px"></th>
 						</tr>
 					</thead>
 					<tbody>
 						@foreach (var driver in Model.Drivers)
 						{
 							<tr>
+								<td>@driver.EGN</td>
 								<td>@driver.FirstName</td>
 								<td>@driver.MiddleName</td>
 								<td>@driver.LastName</td>
-								<td>@driver.EGN</td>
+								<td class="text-center">
+									<a class="btn btn-primary btn-sm mr-1" asp-area="" asp-controller="Driver" asp-action="Edit" asp-route-guid="@driver.Id.ToString()">
+										<i class="fas fa-pen"></i>
+									</a>
+									<a class="btn btn-danger btn-sm" asp-area="" asp-controller="Driver" asp-action="Delete" asp-route-guid="@driver.Id.ToString()" data-list-action-send-post>
+										<i class="fas fa-trash"></i>
+									</a>
+								</td>
 							</tr>
 						}
 					</tbody>

@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore.Mvc;
     using CargoExpress.Core.Models;
     using CargoExpress.Core.Contracts;
+    using CargoExpress.Core.Exceptions;
 
     public class DriverController : BaseController
     {
@@ -11,6 +12,7 @@
         public DriverController(IDriverService _driverService)
         {
             this.driverService = _driverService;
+            this.EntityName = "Driver";
         }
 
         public ActionResult All([FromQuery] DriverSearchQueryModel query)
@@ -37,9 +39,9 @@
             {
                 this.driverService.Create(model);
             }
-            catch (InvalidOperationException ioe)
+            catch (FormException fe)
             {
-                this.ModelState.AddModelError(nameof(model.EGN), ioe.Message);
+                this.ModelState.AddModelError(fe.InputName, fe.ErrorMessage);
             }
 
             if (!ModelState.IsValid)
@@ -48,6 +50,61 @@
             }
 
             return RedirectToAction(nameof(All));
+        }
+
+        public IActionResult Edit([FromQuery] string guid)
+        {
+            DriverCreateViewModel? model = null;
+
+            try
+            {
+                model = driverService.GetDriverViewModelByGuid(new Guid(guid));
+            }
+            catch (FormException fe)
+            {
+                this.ModelState.AddModelError(fe.InputName, fe.ErrorMessage);
+            }
+            catch (Exception)
+            {
+                return RedirectToList();
+            }
+
+            if (model == null)
+            {
+                return RedirectToList();
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit([FromQuery] string guid, DriverCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                driverService.Edit(new Guid(guid), model);
+            }
+            catch (FormException e)
+            {
+                this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
+
+            }
+            catch (Exception)
+            {
+                return RedirectToList();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return RedirectToList();
         }
     }
 }
