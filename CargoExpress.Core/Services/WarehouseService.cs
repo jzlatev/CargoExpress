@@ -1,6 +1,7 @@
 ﻿namespace CargoExpress.Core.Services
 {
     using CargoExpress.Core.Contracts;
+    using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using CargoExpress.Infrastructure.Data.Models;
     using CargoExpress.Infrastructure.Data.Repositories;
@@ -36,6 +37,7 @@
                 .OrderBy(w => w.Name)
                 .Select(w => new WarehouseAllViewModel
                 {
+                    Id = w.Id,
                     WarehouseCode = w.WarehouseCode,
                     Name = w.Name,
                     Address = w.Address
@@ -70,6 +72,44 @@
             { }
 
             return Task.CompletedTask;
+        }
+
+        public void Edit(Guid guid, WarehouseCreateViewModel model)
+        {
+            Warehouse? warehouse = repo.All<Warehouse>()
+                .Where(w => w.Id == guid)
+                .FirstOrDefault();
+
+            if (warehouse == null)
+            {
+                throw new Exception();
+            }
+
+            warehouse.WarehouseCode = model.WarehouseCode;
+            warehouse.Name = model.Name;
+            warehouse.Address = model.Address;
+
+            repo.SaveChanges();
+        }
+
+        public WarehouseCreateViewModel? GetWarehouseViewModelByGuid(Guid guid)
+        {
+            var warehouse = repo.All<Warehouse>()
+                .Where(w => w.Id == guid)
+                .Select(w => new WarehouseCreateViewModel
+                {
+                    WarehouseCode = w.WarehouseCode,
+                    Name = w.Name,
+                    Address = w.Address
+                })
+                .ToList();
+
+            if (warehouse == null)
+            {
+                return null;
+            }
+
+            return warehouse.First();
         }
     }
 }

@@ -46,6 +46,7 @@
 							<th style="width: 100px">Warehouse Code</th>
 							<th style="width: 200px">Name</th>
 							<th style="width: 400px">Address</th>
+							<th style="width: 400px"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -55,6 +56,16 @@
 								<td>@warehouse.WarehouseCode</td>
 								<td>@warehouse.Name</td>
 								<td>@warehouse.Address</td>
+								<td>
+									<div class="row offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1">
+										<a class="btn btn-primary btn-sm mr-1" asp-area="" asp-controller="Warehouse" asp-action="Edit" asp-route-guid="@warehouse.Id.ToString()">
+											<i class="fas fa-pen"></i>
+										</a>
+										<a class="btn btn-danger btn-sm" asp-area="" asp-controller="Warehouse" asp-action="Delete" asp-route-guid="@warehouse.Id.ToString()" data-list-action-send-post>
+											<i class="fas fa-trash"></i>
+										</a>
+									</div>
+								</td>
 							</tr>
 						}
 					</tbody>
