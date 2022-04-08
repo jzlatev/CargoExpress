@@ -1,10 +1,11 @@
-﻿using CargoExpress.Infrastructure.Data.Models;
+﻿using CargoExpress.Infrastructure.Data.Identity;
+using CargoExpress.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CargoExpress.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

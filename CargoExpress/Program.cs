@@ -1,5 +1,6 @@
 using CargoExpress.Core.Constants;
 using CargoExpress.Infrastructure.Data;
+using CargoExpress.Infrastructure.Data.Identity;
 using CargoExpress.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Add contexts
 builder.Services.AddApplicationDbContext(builder.Configuration);
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
     })
