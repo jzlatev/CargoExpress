@@ -35,7 +35,7 @@
 					<div class="form-floating">
 						<label asp-for="Input.Email"></label>
 						<div class="input-group mb-3">
-							<input asp-for="Input.Email" class="form-control" placeholder="Email" autocomplete="email" aria-required="true" />
+							<input asp-for="Input.Email" class="form-control" placeholder="Email" aria-required="true" />
 							<div class="input-group-append">
 								<div class="input-group-text">
 									<span class="fas fa-envelope"></span>
@@ -46,9 +46,35 @@
 					</div>
 
 					<div class="form-floating">
+						<label asp-for="Input.FirstName"></label>
+						<div class="input-group mb-3">
+							<input asp-for="Input.FirstName" class="form-control" placeholder="First Name" aria-required="true" />
+							<div class="input-group-append">
+								<div class="input-group-text">
+									<span class="fas fa-signature"></span>
+								</div>
+							</div>
+						</div>
+						<span asp-validation-for="Input.FirstName" class="text-danger"></span>
+					</div>
+
+					<div class="form-floating">
+						<label asp-for="Input.LastName"></label>
+						<div class="input-group mb-3">
+							<input asp-for="Input.LastName" class="form-control" placeholder="Last Name" aria-required="true" />
+							<div class="input-group-append">
+								<div class="input-group-text">
+									<span class="fas fa-signature"></span>
+								</div>
+							</div>
+						</div>
+						<span asp-validation-for="Input.LastName" class="text-danger"></span>
+					</div>
+
+					<div class="form-floating">
 						<label asp-for="Input.Password"></label>
 						<div class="input-group mb-3">
-							<input asp-for="Input.Password" class="form-control" placeholder="Password" autocomplete="new-password" aria-required="true" />
+							<input asp-for="Input.Password" class="form-control" placeholder="Password" aria-required="true" />
 							<div class="input-group-append">
 								<div class="input-group-text">
 									<span class="fas fa-lock"></span>
@@ -61,7 +87,7 @@
 					<div class="form-floating">
 						<label asp-for="Input.ConfirmPassword"></label>
 						<div class="input-group mb-3">
-							<input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm password" autocomplete="confirm-password" aria-required="true" />
+							<input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm password" aria-required="true" />
 							<div class="input-group-append">
 								<div class="input-group-text">
 									<span class="fas fa-user"></span>
