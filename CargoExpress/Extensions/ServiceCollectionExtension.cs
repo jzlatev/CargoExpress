@@ -1,4 +1,6 @@
-﻿using CargoExpress.Core.Contracts;
+﻿using CargoExpress.Areas.Admin.Contracts;
+using CargoExpress.Areas.Admin.Services;
+using CargoExpress.Core.Contracts;
 using CargoExpress.Core.Services;
 using CargoExpress.Infrastructure.Data;
 using CargoExpress.Infrastructure.Data.Repositories;
@@ -16,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IWarehouseService, WarehouseService>();
             services.AddScoped<IDriverService, DriverService>();
             services.AddScoped<ITruckService, TruckService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

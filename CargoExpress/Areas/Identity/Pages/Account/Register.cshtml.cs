@@ -82,11 +82,11 @@ namespace CargoExpress.Areas.Identity.Pages.Account
 
             [Display(Name = "First Name")]
             [MaxLength(35)]
-            public string? FirstName { get; set; }
+            public string FirstName { get; set; }
 
             [Display(Name = "Last Name")]
             [MaxLength(35)]
-            public string? LastName { get; set; }
+            public string LastName { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
