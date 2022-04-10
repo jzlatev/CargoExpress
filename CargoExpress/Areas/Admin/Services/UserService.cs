@@ -4,6 +4,7 @@
     using CargoExpress.Areas.Admin.Models;
     using CargoExpress.Infrastructure.Data.Identity;
     using CargoExpress.Infrastructure.Data.Repositories;
+    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -34,7 +35,7 @@
             return result;
         }
 
-        public async Task<UserEditViewModel> GetUserById(string id)
+        public async Task<UserEditViewModel> GetUserVModelById(string id)
         {
             var user = await repo.GetByIdAsync<ApplicationUser>(id);
 
@@ -61,6 +62,11 @@
                     Name = $"{u.FirstName} {u.LastName}"
                 })
                 .ToListAsync();
+        }
+
+        public async Task<ApplicationUser> GetUserById(string id)
+        {
+            return await repo.GetByIdAsync<ApplicationUser>(id);
         }
     }
 }

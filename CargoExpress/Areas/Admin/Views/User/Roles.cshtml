@@ -1,0 +1,49 @@
+﻿@model UserRolesViewModel
+
+@{
+	ViewData["Title"] = "User Roles";
+	var roles = (IEnumerable<SelectListItem>)ViewBag.Roles;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>@ViewData["Title"]</title>
+</head>
+<body>
+	<section class="content">
+		<form id="userRole" method="post">
+			<div class="offset-md-4 col-md-4 offset-lg-4 col-lg-4 offset-xl-4 col-xl-4 col-sm-12">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<input type="hidden" name="UserId" value="@Model.UserId" />
+				<input type="hidden" name="Name" value="@Model.Name" />
+				<div class="card card-primary">
+					<div class="card-header">
+						<h3 class="card-title">User Roles</h3>
+					</div>
+					<div class="card-body" style="display: block;">
+						<div class="form-group">
+							<h4>User: @Html.DisplayFor(n => n.Name)</h4>
+						</div>
+						<div class="form-group">
+
+							<div class="form-group">
+								<label><h5>User Roles &#8595;</h5></label>
+								<select asp-for="RoleNames" asp-items="@roles" class="form-control">
+								</select>
+							</div>
+
+						</div>
+					</div>
+					<div class="card-footer">
+						<a href="/Admin/User/All" class="btn btn-secondary">Cancel</a>
+						<input type="submit" value="Submit" class="btn btn-success float-right">
+					</div>
+				</div>
+			</div>
+		</form>
+	</section>
+</body>
+</html>
