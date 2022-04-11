@@ -21,3 +21,7 @@ th {
     padding: 5px;
     text-align: center;
 }
+
+#carouselExampleSlidesOnly img {
+    height: 600px !important;
+}

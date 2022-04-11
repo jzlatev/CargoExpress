@@ -1,8 +1,28 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="text-center">
+	<h1 class="display-4">@ViewData["Title"]</h1>
+</div>
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+	<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<img src="~/img/site/sea way.jpg" class="d-block w-100" alt="site picture">
+			</div>
+			<div class="carousel-item">
+				<img src="~/img/site/at the park.jpg" class="d-block w-100" alt="site picture">
+			</div>
+			<div class="carousel-item">
+				<img src="~/img/site/on way.jpg" class="d-block w-100" alt="site picture">
+			</div>
+			<div class="carousel-item">
+				<img src="~/img/site/truck rest.png" class="d-block w-100" alt="site picture">
+			</div>
+		</div>
+	</div>
+</div>
+<div class="jumbotron jumbotron-fluid">
+	<div class="container">
+		<h2 class="lead">Welcome to the cargo express. Here you can find a variety of different loads. Don't waste any more time, but register and find your cargo.</h2>
+		<h2 class="lead text-center"><a asp-area="Identity" asp-page="/Account/Register">Register</a></h2>
+	</div>
 </div>

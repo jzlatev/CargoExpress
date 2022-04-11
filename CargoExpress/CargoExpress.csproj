@@ -22,4 +22,8 @@
     <ProjectReference Include="..\CargoExpress.Core\CargoExpress.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\site\" />
+  </ItemGroup>
+
 </Project>
