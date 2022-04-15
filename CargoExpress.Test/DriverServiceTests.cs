@@ -10,6 +10,7 @@ namespace CargoExpress.Test
     using Moq;
     using NUnit.Framework;
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public class DriverServiceTests
@@ -103,32 +104,8 @@ namespace CargoExpress.Test
         }
 
         [Test]
-        public void CreateDataBaseError()
-        {
-            IDriverService driverService;
-
-            var model = new DriverCreateViewModel()
-            {
-                //EGN = string.Empty,
-                //FirstName = string.Empty,
-                //MiddleName = string.Empty,
-                //LastName = string.Empty
-            };
-
-            var mockRepo = new Mock<IDriverService>();
-            mockRepo.Setup(repo => repo.Create(It.IsAny<DriverCreateViewModel>())).Throws(new InvalidOperationException());
-
-            
-
-            var service = serviceProvider.GetService<IDriverService>();
-            Assert.Throws<InvalidOperationException>(() => service.Create(model));
-        }
-
-        [Test]
         public void DeleteDriverIfDriverIsAsignedToTheTruck()
         {
-
-
             DriverCreateViewModel model = new DriverCreateViewModel()
             {
                 EGN = "1234567890",
@@ -143,8 +120,66 @@ namespace CargoExpress.Test
 
             service.Delete(new Guid("0259F02A-55EA-450B-9473-761442791864"));
             //mockRepo.Verify(repo => repo.Delete(model), Times.Once);
-
         }
+
+        [Test]
+        public void NotDeleteDriverIfDriverIsNull()
+        {
+            var service = serviceProvider.GetService<IDriverService>();
+
+            Assert.DoesNotThrow(() => service.Delete(new Guid("0259F02A-55EA-450B-9473-761442791864")));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionIfEditDriverIsNull()
+        {
+            DriverCreateViewModel model = new DriverCreateViewModel()
+            {};
+
+            var service = serviceProvider.GetService<IDriverService>();
+
+            Assert.Catch<Exception>(() => service.Edit(new Guid("0259F02A-55EA-450B-9473-761442791864"), model));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionIfEditDriverEGNExistAndIdIsDifferent()
+        {
+            DriverCreateViewModel model = new DriverCreateViewModel()
+            {
+                EGN = "1234567890",
+                FirstName = "Pesho",
+                MiddleName = "Peshov",
+                LastName = "Peshinov"
+            };
+
+            var service = serviceProvider.GetService<IDriverService>();
+
+            Assert.Catch<Exception>(() => service.Edit(new Guid("0259F02A-55EA-490B-9473-761442711864"), model), "The EGN exists.");
+        }
+
+        [Test]
+        public void ShouldNotThrowExceptionIfEditDriverIsSuccessful()
+        {
+            DriverCreateViewModel model = new DriverCreateViewModel()
+            {
+                EGN = "1234567890",
+                FirstName = "Pesho",
+                MiddleName = "Seshov",
+                LastName = "Peshinov"
+            };
+
+            var service = serviceProvider.GetService<IDriverService>();
+
+            Assert.DoesNotThrow(() => service.Edit(new Guid("0259F02A-55EA-450B-9473-761442791864"), model));
+        }
+
+        //[Test]
+        //public void ShouldReturnNullIfCoolectionIsEmpty()
+        //{
+        //    var service = serviceProvider.GetService<IDriverService>();
+
+        //    Assert.Null(() => service.GetDriverViewModelByGuid(new Guid("0159F02A-55EA-450B-9473-761442791864")));
+        //}
 
         [TearDown]
         public void TearDown()
@@ -166,6 +201,7 @@ namespace CargoExpress.Test
             var truck = new Truck()
             {
                 PlateNumber = "12345678",
+                DriverId = new Guid("0259F02A-55EA-450B-9473-761442791864"),
                 IsBusy = false,
             };
 

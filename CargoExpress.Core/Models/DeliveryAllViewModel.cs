@@ -26,6 +26,6 @@
 
         public string? DeliveryAddress { get; set; }
 
-        //public Cargo Cargos { get; set; }
+        public string Status { get; set; }
     }
 }

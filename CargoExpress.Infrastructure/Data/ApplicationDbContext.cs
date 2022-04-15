@@ -16,9 +16,6 @@ namespace CargoExpress.Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<DeliveryTruck>()
-                .HasKey(dt => new { dt.DeliveryId, dt.TruckId });
-
             builder.Entity<Cargo>()
                 .HasIndex(c => c.CargoRef)
                 .IsUnique();
@@ -41,7 +38,5 @@ namespace CargoExpress.Infrastructure.Data
         public DbSet<Truck> Trucks { get; set; }
 
         public DbSet<Warehouse> Warehouses { get; set; }
-
-        public DbSet<DeliveryTruck> DeliveriesTrucks { get; set; }
     }
 }

@@ -65,6 +65,23 @@
 							<label asp-for="DeliveryAddress" class="form-label"></label>
 							<textarea id="deliveryAddr" asp-for="DeliveryAddress" class="form-control" rows="3" placeholder="Delivery address"></textarea>
 						</div>
+						@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
+						{
+							<div class="form-group">
+								<label asp-for="TruckId" class="form-label"></label>
+								@if (Model.TruckPlates != null)
+								{
+									<select asp-for="TruckId" class="form-control custom-select">
+										<option value=""> - </option>
+										@foreach (var truck in Model.TruckPlates)
+										{
+											<option value="@truck.Key">@truck.Value</option>
+										}
+									</select>
+								}
+								<span asp-validation-for="TruckId" class="text-danger"></span>
+							</div>
+						}
 					</div>
 					<div class="card-footer">
 						<a href="/" class="btn btn-secondary">Cancel</a>

@@ -1,8 +1,8 @@
 ﻿using CargoExpress.Core.Contracts;
 using CargoExpress.Core.Exceptions;
 using CargoExpress.Core.Models;
-using CargoExpress.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CargoExpress.Controllers
 {
@@ -31,7 +31,7 @@ namespace CargoExpress.Controllers
 
             try
             {
-                this.cargoService.Create(model);
+                this.cargoService.Create(model, User);
             }
             catch (FormException e)
             {
@@ -48,7 +48,7 @@ namespace CargoExpress.Controllers
 
         public IActionResult All([FromQuery]CargoSearchQueryModel query)
         {
-            (query.Cargos, query.TotalCargo) = cargoService.All(query.SearchTerm, query.Sorting, query.CurrentPage);
+            (query.Cargos, query.TotalCargo) = cargoService.All(query.SearchTerm, query.Sorting, query.CurrentPage, User);
 
             return View(query);
         }
@@ -70,6 +70,16 @@ namespace CargoExpress.Controllers
                 return RedirectToList();
             }
 
+            if (model.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier) && !(User.IsInRole("Administrator") || User.IsInRole("Moderator")))
+            {
+                return new ForbidResult();
+            }
+
+            if (model.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && (model.Status == "In progress" || model.Status == "Done"))
+            {
+                return new ForbidResult();
+            }
+
             if (model == null)
             {
                 return RedirectToList();
@@ -84,6 +94,16 @@ namespace CargoExpress.Controllers
             if (!ModelState.IsValid)
             {
                 return View(model);
+            }
+
+            if (model.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier) && !(User.IsInRole("Administrator") || User.IsInRole("Moderator")))
+            {
+                return new ForbidResult();
+            }
+
+            if (model.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && (model.Status == "In progress" || model.Status == "Done"))
+            {
+                return new ForbidResult();
             }
 
             try
@@ -110,6 +130,22 @@ namespace CargoExpress.Controllers
         [HttpPost]
         public IActionResult Delete([FromQuery] string guid)
         {
+            CargoCreateViewModel? model = null;
+
+
+            model = cargoService.GetCargoViewModelByGuid(new Guid(guid));
+            
+
+            if (model.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier) && !(User.IsInRole("Administrator") || User.IsInRole("Moderator")))
+            {
+                return new ForbidResult();
+            }
+
+            if (model.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && (model.Status == "In progress" || model.Status == "Done"))
+            {
+                return new ForbidResult();
+            }
+
             try
             {
                 cargoService.Delete(new Guid(guid));

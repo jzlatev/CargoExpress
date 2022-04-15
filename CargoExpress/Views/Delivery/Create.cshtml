@@ -21,21 +21,21 @@
 						<h3 class="card-title">Create</h3>
 					</div>
 					<div class="card-body" style="display: block;">
+						
 						<div class="form-group">
-							<label asp-for="PickedAt" class="form-label"></label>
-							<input asp-for="PickedAt" class="form-control" aria-required="true" />
-							<span asp-validation-for="PickedAt" class="text-danger"></span>
+							<label asp-for="CargoId" class="form-label"></label>
+							@if (Model.CargoNames != null) {
+								<select asp-for="CargoId" class="form-control custom-select">
+									<option value=""> - </option>
+									@foreach (var cargo in Model.CargoNames)
+									{
+										<option value="@cargo.Key">@cargo.Value</option>
+									}
+								</select>
+							}
+							<span asp-validation-for="CargoId" class="text-danger"></span>
 						</div>
-						<div class="form-group">
-							<label asp-for="DeliveredAt" class="form-label"></label>
-							<input asp-for="DeliveredAt" class="form-control" aria-required="true" />
-							<span asp-validation-for="DeliveredAt" class="text-danger"></span>
-						</div>
-						@*<div class="form-group">
-							<label asp-for="PickWarehouseId" class="form-label"></label>
-							<input asp-for="PickWarehouseId" class="form-control" placeholder="Loading warehouse number" aria-required="true" />
-							<span asp-validation-for="PickWarehouseId" class="text-danger"></span>
-						</div>*@
+
 						<div class="form-group">
 							<label asp-for="PickWarehouseId" class="form-label"></label>
 							@if (Model.WarehouseNames != null) {
@@ -53,11 +53,6 @@
 							<label asp-for="PickAddress" class="form-label"></label>
 							<textarea id="deliveryPickAddr" asp-for="PickAddress" class="form-control" rows="3" placeholder="Loading address"></textarea>
 						</div>
-						@*<div class="form-group">
-							<label asp-for="DeliveryWarehouseId" class="form-label"></label>
-							<input asp-for="DeliveryWarehouseId" class="form-control" placeholder="Delivery warehouse number" aria-required="true" />
-							<span asp-validation-for="DeliveryWarehouseId" class="text-danger"></span>
-						</div>*@
 						<div class="form-group">
 							<label asp-for="DeliveryWarehouseId" class="form-label"></label>
 							@if (Model.WarehouseNames != null) {
@@ -75,9 +70,25 @@
 							<label asp-for="DeliveryAddress" class="form-label"></label>
 							<textarea id="deliveryAddr" asp-for="DeliveryAddress" class="form-control" rows="3" placeholder="Delivery address"></textarea>
 						</div>
+						@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
+						{
+							<div class="form-group">
+								<label asp-for="TruckId" class="form-label"></label>
+								@if (Model.TruckPlates != null) {
+									<select asp-for="TruckId" class="form-control custom-select">
+										<option value=""> - </option>
+										@foreach (var truck in Model.TruckPlates)
+										{
+											<option value="@truck.Key">@truck.Value</option>
+										}
+									</select>
+								}
+								<span asp-validation-for="TruckId" class="text-danger"></span>
+							</div>
+						}
 					</div>
 					<div class="card-footer">
-						<a href="/" class="btn btn-secondary">Cancel</a>
+						<a href="/Delivery/All" class="btn btn-secondary">Cancel</a>
 						<input type="submit" value="Create" class="btn btn-success float-right">
 					</div>
 				</div>

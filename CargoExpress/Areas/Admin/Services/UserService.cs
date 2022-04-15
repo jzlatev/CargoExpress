@@ -4,7 +4,6 @@
     using CargoExpress.Areas.Admin.Models;
     using CargoExpress.Infrastructure.Data.Identity;
     using CargoExpress.Infrastructure.Data.Repositories;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;

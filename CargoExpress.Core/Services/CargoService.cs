@@ -2,27 +2,34 @@
 using CargoExpress.Core.Exceptions;
 using CargoExpress.Core.Models;
 using CargoExpress.Core.Models.Enums;
+using CargoExpress.Infrastructure.Data.Identity;
 using CargoExpress.Infrastructure.Data.Models;
 using CargoExpress.Infrastructure.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CargoExpress.Core.Services
 {
     public class CargoService : ICargoService
     {
         private readonly IApplicationDbRepository repo;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public CargoService(IApplicationDbRepository _repo)
+        public CargoService(IApplicationDbRepository _repo, UserManager<ApplicationUser> _userManager)
         {
             this.repo = _repo;
+            userManager = _userManager;
         }
 
-        public (IEnumerable<CargoAllViewModel>, int totalCargo) All(string? searchTerm, CargoSorting sorting, int currentPage)
+        public (IEnumerable<CargoAllViewModel>, int totalCargo) All(string? searchTerm, CargoSorting sorting, int currentPage, ClaimsPrincipal user)
         {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
             var cargoQuery = repo.All<Cargo>().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                cargoQuery = cargoQuery.Where(c => 
+                cargoQuery = cargoQuery.Where(c =>
                 c.Name.ToLower().Contains(searchTerm.ToLower()) ||
                 c.Description.ToLower().Contains(searchTerm.ToLower()) ||
                 c.CargoRef.ToString().ToLower().Contains(searchTerm.ToLower()));
@@ -37,7 +44,23 @@ namespace CargoExpress.Core.Services
                 _ => cargoQuery.OrderByDescending(r => r.CreatedAt)
             };
 
+            if (!(user.IsInRole("Administrator") || user.IsInRole("Moderator")))
+            {
+                cargoQuery = cargoQuery.Where(c => c.UserId == userId);
+            }
+
             var totalNumCargo = cargoQuery.Count();
+
+            var userData = userManager.Users;
+
+            var userNames = userData.Select(u => new CargoAllUserNames
+            {
+                Guid = u.Id.ToString(),
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email
+            })
+            .ToDictionary(keySelector: u => u.Guid);
 
             var allCargosCurrentPage = cargoQuery
                 .Skip((currentPage - 1) * CargoSearchQueryModel.CargosPerPage) // Curnt page - 1 * number of all pages
@@ -52,21 +75,25 @@ namespace CargoExpress.Core.Services
                     CreatedAt = c.CreatedAt,
                     IsDangerous = c.IsDangerous == true ? "Yes" : "No",
                     Description = c.Description,
-                    Status = c.Delivery != null ? "Picked" : "Free",
+                    Status = c.Delivery == null ? "Not assigned to delivery" : c.Delivery.getStatus(),
+                    Username = userNames[c.UserId].getFullname()
                 })
                 .ToList();
 
             return (allCargosCurrentPage, totalNumCargo);
         }
 
-        public Task Create(CargoCreateViewModel model)
+        public Task Create(CargoCreateViewModel model, ClaimsPrincipal user)
         {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+
             Cargo cargo = new Cargo
             {
                 Name = model.Name,
                 Weight = model.Weight,
                 Description = model.Description,
-                IsDangerous = model.IsDangerous
+                IsDangerous = model.IsDangerous,
+                UserId = userId.ToString()
             };
 
             var cargoRef = cargo.CargoRef;
@@ -130,7 +157,9 @@ namespace CargoExpress.Core.Services
                     Name = c.Name,
                     Weight = c.Weight,
                     Description = c.Description,
-                    IsDangerous = c.IsDangerous
+                    IsDangerous = c.IsDangerous,
+                    UserId = c.UserId,
+                    Status = c.getStatus()
                 })
                 .ToList();
 
@@ -139,7 +168,26 @@ namespace CargoExpress.Core.Services
                 return null;
             }
 
-            return cargoList.First();
+            var cargoCreateViewModel = cargoList.First();
+
+            var cargo = repo.All<Cargo>()
+                .Where(c => c.Id == guid)
+                .Select(c => c)
+                .ToList().First();
+
+            if (cargo.DeliveryId != null)
+            {
+                var delivery = repo.All<Delivery>()
+                    .Where(d => d.Id == cargo.DeliveryId)
+                    .Select(d => d)
+                    .ToList().First();
+
+                cargo.Delivery = delivery;
+            }
+
+            cargoCreateViewModel.Status = cargo.getStatus();
+
+            return cargoCreateViewModel;
         }
     }
 }

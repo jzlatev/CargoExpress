@@ -19,8 +19,9 @@
             this.repo = _repo;
         }
 
-        public (IEnumerable<DeliveryAllViewModel>, int totalDeliveries) All(string searchTerm, DeliverySorting deliverySorting, int currentPage)
+        public (IEnumerable<DeliveryAllViewModel>, int totalDeliveries) All(string searchTerm, DeliverySorting deliverySorting, int currentPage, ClaimsPrincipal user)
         {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
             var deliveryQuery = repo.All<Delivery>().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -39,6 +40,11 @@
                 _ => deliveryQuery.OrderByDescending(d => d.CreatedAt)
             };
 
+            if (!(user.IsInRole("Administrator") || user.IsInRole("Moderator")))
+            {
+                deliveryQuery = deliveryQuery.Where(c => c.UserId == userId);
+            }
+
             var totalDeliveries = deliveryQuery.Count();
 
             var deliveries = deliveryQuery
@@ -56,6 +62,7 @@
                     PickAddress = d.PickAddress,
                     DeliveryWarehouseId = d.DeliveryWarehouseId.ToString(),
                     DeliveryAddress = d.DeliveryAddress,
+                    Status = d.getStatus()
                 })
                 .ToList();
 
@@ -67,21 +74,30 @@
             var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
             Delivery delivery = new Delivery
-            {
-                PickedAt = model.PickedAt,
-                DeliveredAt = model.DeliveredAt,
+            {   
                 PickWarehouseId = model.PickWarehouseId,
                 PickAddress = model.PickAddress,
                 DeliveryWarehouseId = model.DeliveryWarehouseId,
                 DeliveryAddress = model.DeliveryAddress,
-                UserId = userId.ToString()
+                UserId = userId.ToString(),
+                TruckId = model.TruckId,
             };
 
             var deliveryRef = delivery.DeliveryRef;
 
+            var cargoId = model.CargoId;
+
+            Cargo? cargo = repo.All<Cargo>()
+               .Where(d => d.Id == cargoId)
+               .ToList()
+               .FirstOrDefault();
+
+            cargo.DeliveryId = delivery.Id;
+
+
             if (repo.All<Delivery>().Any(d => d.DeliveryRef == deliveryRef) && deliveryRef != null)
             {
-                throw new FormException(nameof(model.PickedAt), "The delivery exists.");
+                throw new FormException(nameof(model.CargoId), "The delivery exists.");
             }
 
             if (delivery.PickWarehouseId == delivery.DeliveryWarehouseId)
@@ -106,6 +122,23 @@
                 .Where(d => d.Id == guid)
                 .ToList()
                 .FirstOrDefault();
+
+            Cargo? cargo = repo.All<Cargo>()
+                .Where(t => t.DeliveryId == delivery.Id)
+                .FirstOrDefault();
+            if (cargo != null)
+            {
+                cargo.DeliveryId = null;
+            }
+
+            Truck? truck = repo.All<Truck>()
+                .Where(t => t.DeliveryId == delivery.Id)
+                .FirstOrDefault();
+
+            if (truck != null)
+            {
+                truck.DeliveryId = null;
+            }
 
             if (delivery == null)
             {
@@ -133,12 +166,20 @@
                 throw new FormException(nameof(model.DeliveryWarehouseId), "The loading warehouse coincides with the delivery warehouse.");
             }
 
+            if (model.DeliveredAt != null && model.PickedAt == null)
+            {
+                throw new FormException(nameof(model.PickedAt), "Missing loading date.");
+            }
+
+            //delivery.cargoId = model.CargoId ?????
+
             delivery.PickedAt = model.PickedAt;
             delivery.DeliveredAt = model.DeliveredAt;
             delivery.PickWarehouseId = model.PickWarehouseId;
             delivery.PickAddress = model.PickAddress;
             delivery.DeliveryWarehouseId = model.DeliveryWarehouseId;
             delivery.DeliveryAddress = model.DeliveryAddress;
+            delivery.TruckId = model.TruckId;
 
             repo.SaveChanges();
         }
@@ -166,6 +207,21 @@
             return deliveryList.First();
         }
 
+        public Delivery? GetDeliveryByGuid(Guid guid)
+        {
+            var deliveryList = repo.All<Delivery>()
+                .Where(d => d.Id == guid)
+                .Select(d => d)
+                .ToList();
+
+            if (deliveryList.Count == 0)
+            {
+                return null;
+            }
+
+            return deliveryList.First();
+        }
+
         public void PopulateWarehouse(DeliveryCreateViewModel model)
         {
             var warehouses = repo.All<Warehouse>().Select(w => w).ToList();
@@ -178,5 +234,73 @@
 
             model.WarehouseNames = availableWarehouses;
         }
-    }
+
+        public void PopulateTruck(DeliveryCreateViewModel model)
+        {
+            var trucks = repo.All<Truck>().Where(t => t.DeliveryId == null && t.DriverId != null).Select(t => t).ToList();
+
+            if (trucks == null)
+            {
+                throw new FormException(nameof(model.TruckId), "Тhere are no free trucks.");
+            }
+
+            Dictionary<string, string> availableTrucks = new Dictionary<string, string>();
+
+            foreach (var truck in trucks)
+            {
+                availableTrucks.Add(truck.Id.ToString(), truck.PlateNumber);
+            }
+
+            model.TruckPlates = availableTrucks;
+        }
+
+        public void PopulateCargo(DeliveryCreateViewModel model, ClaimsPrincipal user)
+        {
+            var cargosQuery = repo.All<Cargo>().Where(c => c.DeliveryId == null).Select(c => c);
+
+            if (!(user.IsInRole("Administrator") || user.IsInRole("Moderator")))
+            {
+                cargosQuery = cargosQuery.Where(c => c.UserId == user.FindFirstValue(ClaimTypes.NameIdentifier));
+            }
+
+            var cargos = cargosQuery.ToList();
+
+            if (cargos == null)
+            {
+                throw new FormException(nameof(model.CargoId), "Тhere are no available cargos.");
+            }
+
+            Dictionary<string, string> availableCargos = new Dictionary<string, string>();
+
+            foreach (var cargo in cargos)
+            {
+                availableCargos.Add(cargo.Id.ToString(), cargo.Name);
+            }
+
+            model.CargoNames = availableCargos;
+        }
+        public void Pick(Guid guid)
+        {
+            var delivery = GetDeliveryByGuid(guid);
+            delivery.PickedAt = DateTime.Now;
+
+            repo.SaveChanges();
+        }
+
+        public void Deliver(Guid guid)
+        {
+            var deliveryField = repo.All<Delivery>()
+                .Where(d => d.Id == guid)
+                .Select(d => d.PickedAt)
+                .FirstOrDefault();
+
+            if (deliveryField != null)
+            {
+                var delivery = GetDeliveryByGuid(guid);
+                delivery.DeliveredAt = DateTime.Now;
+
+                repo.SaveChanges();
+            }
+        }
+    }  
 }

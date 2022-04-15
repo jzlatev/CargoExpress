@@ -19,6 +19,8 @@
 		{
 			var model = new DeliveryCreateViewModel();
 			deliveryService.PopulateWarehouse(model);
+			deliveryService.PopulateCargo(model, User);
+			deliveryService.PopulateTruck(model);
 
 			return View(model);
 		}
@@ -28,6 +30,10 @@
 		{
 			if (!ModelState.IsValid)
 			{
+				deliveryService.PopulateWarehouse(model);
+				deliveryService.PopulateCargo(model, User);
+				deliveryService.PopulateTruck(model);
+
 				return View(model);
 			}
 
@@ -43,6 +49,9 @@
 			if (!ModelState.IsValid)
 			{
 				deliveryService.PopulateWarehouse(model);
+				deliveryService.PopulateCargo(model, User);
+				deliveryService.PopulateTruck(model);
+
 				return View(model);
 			}
 
@@ -51,7 +60,7 @@
 
 		public IActionResult All([FromQuery]DeliverySearchQueryModel query)
         {
-			(query.Deliveries, query.TotalDeliveries) = deliveryService.All(query.SearchTerm, query.Sorting, query.CurrentPage);
+			(query.Deliveries, query.TotalDeliveries) = deliveryService.All(query.SearchTerm, query.Sorting, query.CurrentPage, User);
 
 			return View(query);
         }
@@ -64,7 +73,9 @@
             {
 				model = deliveryService.GetDeliveryViewModelByGuid(new Guid(guid));
 				deliveryService.PopulateWarehouse(model);
-            }
+				deliveryService.PopulateCargo(model, User);
+				deliveryService.PopulateTruck(model);
+			}
 			catch (FormException fe)
             {
 				this.ModelState.AddModelError(fe.InputName, fe.ErrorMessage);
@@ -86,6 +97,8 @@
 		public IActionResult Edit([FromQuery] string guid, DeliveryCreateViewModel model)
         {
 			deliveryService.PopulateWarehouse(model);
+			deliveryService.PopulateCargo(model, User);
+			deliveryService.PopulateTruck(model);
 
 			if (!ModelState.IsValid)
 			{
@@ -108,6 +121,8 @@
 			if (!ModelState.IsValid)
 			{
 				deliveryService.PopulateWarehouse(model);
+				deliveryService.PopulateCargo(model, User);
+				deliveryService.PopulateTruck(model);
 				return View(model);
 			}
 
@@ -126,5 +141,41 @@
 
 			return RedirectToList();
         }
-    }
+
+		[HttpPost]
+		public IActionResult Pick([FromQuery] string guid)
+		{
+			if (!(User.IsInRole("Administrator") || User.IsInRole("Moderator")))
+			{
+				return new ForbidResult();
+			}
+
+			try
+			{
+				deliveryService.Pick(new Guid(guid));
+			}
+			catch (Exception)
+			{ }
+
+			return RedirectToList();
+		}
+
+		[HttpPost]
+		public IActionResult Deliver([FromQuery] string guid)
+		{
+			if (!(User.IsInRole("Administrator") || User.IsInRole("Moderator")))
+            {
+				return new ForbidResult();
+			}
+
+			try
+			{
+				deliveryService.Deliver(new Guid(guid));
+			}
+			catch (Exception)
+			{ }
+
+			return RedirectToList();
+		}
+	}
 }

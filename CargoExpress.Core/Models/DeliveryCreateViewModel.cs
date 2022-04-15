@@ -3,25 +3,29 @@
 	using System.ComponentModel.DataAnnotations;
     using CargoExpress.Core.CustomAttributes;
 
-    /// <summary>
-    /// Create delivery.
-    /// </summary>
-    public class DeliveryCreateViewModel
+	/// <summary>
+	/// Create delivery.
+	/// </summary>
+	public class DeliveryCreateViewModel
     {
         /// <summary>
         /// Date of pick cargo
         /// </summary>
-        [Required]
         [Display(Name = "Date of pick cargo")]
         public DateTime? PickedAt { get; set; }
 
         /// <summary>
         /// Date of delivery cargo
         /// </summary>
-        [Required]
         [Display(Name = "Date of delivery cargo")]
-        [IsBefore(nameof(PickedAt), errorMessage: "Date must be after date of pick!")]
+        //[IsBefore(nameof(PickedAt), errorMessage: "Date must be after date of pick!")]
         public DateTime? DeliveredAt { get; set; }
+
+        [Required]
+        [Display(Name = "Cargo name")]
+        public Guid? CargoId { get; set; }
+
+        public Dictionary<string, string>? CargoNames { get; set; }
 
         /// <summary>
         /// Warehouse of cargo
@@ -42,7 +46,6 @@
         /// <summary>
         /// Delivery warehouse
         /// </summary>
-        [Required]
         [Display(Name = "Delivery warehouse number")]
         public Guid? DeliveryWarehouseId { get; set; }
 
@@ -54,5 +57,10 @@
         [MaxLength(500)]
         [Display(Name = "Delivery address")]
         public string? DeliveryAddress { get; set; }
+
+        [Display(Name = "Truck plate number")]
+        public Guid? TruckId { get; set; }
+
+        public Dictionary<string, string>? TruckPlates { get; set; }
     }
 }

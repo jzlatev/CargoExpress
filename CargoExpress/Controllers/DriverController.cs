@@ -4,7 +4,11 @@
     using CargoExpress.Core.Models;
     using CargoExpress.Core.Contracts;
     using CargoExpress.Core.Exceptions;
+	using Microsoft.AspNetCore.Authorization;
+	using CargoExpress.Areas.Admin.Constants;
 
+    [Authorize(Roles = UserConstants.Roles.Moderator)]
+    [Authorize(Roles = UserConstants.Roles.Administrator)]
     public class DriverController : BaseController
     {
         private readonly IDriverService driverService;

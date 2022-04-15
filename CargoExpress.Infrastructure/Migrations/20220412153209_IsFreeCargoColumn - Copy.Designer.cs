@@ -4,6 +4,7 @@ using CargoExpress.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CargoExpress.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220412153209_IsFreeCargoColumn")]
+    partial class IsFreeCargoColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,6 +121,9 @@ namespace CargoExpress.Infrastructure.Data.Migrations
                     b.Property<bool>("IsDangerous")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsFree")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -178,10 +183,6 @@ namespace CargoExpress.Infrastructure.Data.Migrations
                     b.Property<DateTime?>("PickedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("TruckId")
-                        .HasMaxLength(36)
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(36)
@@ -195,6 +196,21 @@ namespace CargoExpress.Infrastructure.Data.Migrations
                     b.HasIndex("PickWarehouseId");
 
                     b.ToTable("Deliveries");
+                });
+
+            modelBuilder.Entity("CargoExpress.Infrastructure.Data.Models.DeliveryTruck", b =>
+                {
+                    b.Property<Guid>("DeliveryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TruckId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("DeliveryId", "TruckId");
+
+                    b.HasIndex("TruckId");
+
+                    b.ToTable("DeliveriesTrucks");
                 });
 
             modelBuilder.Entity("CargoExpress.Infrastructure.Data.Models.Driver", b =>
@@ -234,9 +250,6 @@ namespace CargoExpress.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("DeliveryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("DriverId")
                         .HasColumnType("uniqueidentifier");
 
@@ -249,8 +262,6 @@ namespace CargoExpress.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DeliveryId");
 
                     b.HasIndex("DriverId")
                         .IsUnique()
@@ -443,17 +454,30 @@ namespace CargoExpress.Infrastructure.Data.Migrations
                     b.Navigation("Warehouse");
                 });
 
-            modelBuilder.Entity("CargoExpress.Infrastructure.Data.Models.Truck", b =>
+            modelBuilder.Entity("CargoExpress.Infrastructure.Data.Models.DeliveryTruck", b =>
                 {
                     b.HasOne("CargoExpress.Infrastructure.Data.Models.Delivery", "Delivery")
-                        .WithMany("Trucks")
-                        .HasForeignKey("DeliveryId");
+                        .WithMany("DeliveriesTrucks")
+                        .HasForeignKey("DeliveryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
+                    b.HasOne("CargoExpress.Infrastructure.Data.Models.Truck", "Truck")
+                        .WithMany("DeliveriesTrucks")
+                        .HasForeignKey("TruckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Delivery");
+
+                    b.Navigation("Truck");
+                });
+
+            modelBuilder.Entity("CargoExpress.Infrastructure.Data.Models.Truck", b =>
+                {
                     b.HasOne("CargoExpress.Infrastructure.Data.Models.Driver", "Driver")
                         .WithOne("Truck")
                         .HasForeignKey("CargoExpress.Infrastructure.Data.Models.Truck", "DriverId");
-
-                    b.Navigation("Delivery");
 
                     b.Navigation("Driver");
                 });
@@ -513,12 +537,17 @@ namespace CargoExpress.Infrastructure.Data.Migrations
                 {
                     b.Navigation("Cargos");
 
-                    b.Navigation("Trucks");
+                    b.Navigation("DeliveriesTrucks");
                 });
 
             modelBuilder.Entity("CargoExpress.Infrastructure.Data.Models.Driver", b =>
                 {
                     b.Navigation("Truck");
+                });
+
+            modelBuilder.Entity("CargoExpress.Infrastructure.Data.Models.Truck", b =>
+                {
+                    b.Navigation("DeliveriesTrucks");
                 });
 
             modelBuilder.Entity("CargoExpress.Infrastructure.Data.Models.Warehouse", b =>

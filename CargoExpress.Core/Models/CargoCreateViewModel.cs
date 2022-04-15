@@ -19,6 +19,7 @@ namespace CargoExpress.Core.Models
         /// </summary>
         [Required]
         [Range(1, 300000)]
+        [Display(Name = "Weight (kg)")]
         public float Weight { get; set; }
 
         /// <summary>
@@ -32,5 +33,9 @@ namespace CargoExpress.Core.Models
         /// </summary>
         [Display(Name = "Is dangerous")]
         public bool IsDangerous { get; set; }
+
+        public string? UserId { get; set; }
+
+        public string? Status{ get; set; }
     }
 }

@@ -1,10 +1,14 @@
 ﻿namespace CargoExpress.Controllers
 {
-    using CargoExpress.Core.Contracts;
+	using CargoExpress.Areas.Admin.Constants;
+	using CargoExpress.Core.Contracts;
     using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
-    using Microsoft.AspNetCore.Mvc;
+	using Microsoft.AspNetCore.Authorization;
+	using Microsoft.AspNetCore.Mvc;
 
+    [Authorize(Roles = UserConstants.Roles.Moderator)]
+    [Authorize(Roles = UserConstants.Roles.Administrator)]
     public class TruckController : BaseController
     {
         private readonly ITruckService truckService;
@@ -102,12 +106,12 @@
             {
                 this.truckService.Edit(new Guid(guid), model);
             }
-            catch (FormException e)
+            catch (FormException fe)
             {
-                this.ModelState.AddModelError(e.InputName, e.ErrorMessage);
+                this.ModelState.AddModelError(fe.InputName, fe.ErrorMessage);
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return RedirectToList();
             }
@@ -123,8 +127,6 @@
         [HttpPost]
         public IActionResult Delete([FromQuery] string guid)
         {
-            //TruckCreateViewModel? model = null;
-
             try
             {
                 truckService.Delete(new Guid(guid));

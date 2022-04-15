@@ -1,11 +1,15 @@
 ﻿namespace CargoExpress.Controllers
 {
-    using CargoExpress.Core.Contracts;
+	using CargoExpress.Areas.Admin.Constants;
+	using CargoExpress.Core.Contracts;
     using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
-    using Microsoft.AspNetCore.Mvc;
+	using Microsoft.AspNetCore.Authorization;
+	using Microsoft.AspNetCore.Mvc;
     using Microsoft.CodeAnalysis.Differencing;
 
+    [Authorize(Roles = UserConstants.Roles.Moderator)]
+    [Authorize(Roles = UserConstants.Roles.Administrator)]
     public class WarehouseController : BaseController
     {
         private readonly IWarehouseService warehouseService;

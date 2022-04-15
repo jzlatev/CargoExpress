@@ -30,9 +30,35 @@ namespace CargoExpress.Infrastructure.Data.Models
         [Required]
         public bool IsDangerous { get; set; }
 
+        [Required]
+        [MaxLength(36)]
+        public string? UserId { get; set; }
+
         [ForeignKey(nameof(Delivery))]
         public Guid? DeliveryId { get; set; }
         public Delivery? Delivery { get; set; }
+
+        public string getStatus()
+        {
+            if (Delivery == null)
+            {
+                return "Not assigned to a delivery";
+            }
+
+            if (Delivery.DeliveredAt == null)
+            {
+                if (Delivery.PickedAt == null)
+                {
+                    return "Pending";
+                }
+                else
+                {
+                    return "In progress";
+                }
+            }
+
+            return "Done";
+        }
 
     }
 }

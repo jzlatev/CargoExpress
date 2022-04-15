@@ -71,7 +71,9 @@
                 repo.SaveChanges();
             }
             catch (InvalidOperationException)
-            { }
+            {
+                throw new InvalidOperationException("dbError");
+            }
 
             return Task.CompletedTask;
         }

@@ -19,6 +19,8 @@ namespace CargoExpress.Infrastructure.Data.Models
         [Required]
         public bool IsBusy { get; set; }
 
-        public virtual IList<DeliveryTruck> DeliveriesTrucks { get; set; } = new List<DeliveryTruck>();
+        [ForeignKey(nameof(Delivery))]
+        public Guid? DeliveryId { get; set; }
+        public Delivery? Delivery { get; set; }
     }
 }

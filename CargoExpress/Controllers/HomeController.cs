@@ -15,7 +15,7 @@ namespace CargoExpress.Controllers
 
         public IActionResult Index()
         {
-            ViewData["Title"] = "Wellcome to Cargo Express";
+            ViewData["Title"] = "Welcome to Cargo Express";
             return View();
         }
 
