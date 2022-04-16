@@ -9,6 +9,7 @@ namespace CargoExpress.Infrastructure.Data.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
+        [MinLength(8)]
         [MaxLength(8)]
         public string? PlateNumber { get; set; }
 

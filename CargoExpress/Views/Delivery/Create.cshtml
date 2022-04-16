@@ -21,21 +21,6 @@
 						<h3 class="card-title">Create</h3>
 					</div>
 					<div class="card-body" style="display: block;">
-						
-						<div class="form-group">
-							<label asp-for="CargoId" class="form-label"></label>
-							@if (Model.CargoNames != null) {
-								<select asp-for="CargoId" class="form-control custom-select">
-									<option value=""> - </option>
-									@foreach (var cargo in Model.CargoNames)
-									{
-										<option value="@cargo.Key">@cargo.Value</option>
-									}
-								</select>
-							}
-							<span asp-validation-for="CargoId" class="text-danger"></span>
-						</div>
-
 						<div class="form-group">
 							<label asp-for="PickWarehouseId" class="form-label"></label>
 							@if (Model.WarehouseNames != null) {
@@ -52,6 +37,7 @@
 						<div class="form-group">
 							<label asp-for="PickAddress" class="form-label"></label>
 							<textarea id="deliveryPickAddr" asp-for="PickAddress" class="form-control" rows="3" placeholder="Loading address"></textarea>
+							<span asp-validation-for="PickAddress" class="text-danger"></span>
 						</div>
 						<div class="form-group">
 							<label asp-for="DeliveryWarehouseId" class="form-label"></label>
@@ -69,6 +55,7 @@
 						<div class="form-group">
 							<label asp-for="DeliveryAddress" class="form-label"></label>
 							<textarea id="deliveryAddr" asp-for="DeliveryAddress" class="form-control" rows="3" placeholder="Delivery address"></textarea>
+							<span asp-validation-for="DeliveryAddress" class="text-danger"></span>
 						</div>
 						@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
 						{

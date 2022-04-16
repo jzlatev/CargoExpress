@@ -18,7 +18,9 @@ namespace CargoExpress.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var model = new CargoCreateViewModel();
+            cargoService.PopulateAvailableDeliveries(model, User);
+            return View(model);
         }
 
         [HttpPost]
@@ -85,6 +87,8 @@ namespace CargoExpress.Controllers
                 return RedirectToList();
             }
 
+            cargoService.PopulateAvailableDeliveries(model, User);
+
             return View(model);
         }
 
@@ -96,12 +100,16 @@ namespace CargoExpress.Controllers
                 return View(model);
             }
 
+            var cargoViewModel = cargoService.GetCargoViewModelByGuid(new Guid(guid));
+
+            model.UserId = cargoViewModel.UserId;
+
             if (model.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier) && !(User.IsInRole("Administrator") || User.IsInRole("Moderator")))
             {
                 return new ForbidResult();
             }
 
-            if (model.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && (model.Status == "In progress" || model.Status == "Done"))
+            if (!(User.IsInRole("Administrator") || User.IsInRole("Moderator")) && model.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && (model.Status == "In progress" || model.Status == "Done"))
             {
                 return new ForbidResult();
             }

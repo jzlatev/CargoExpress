@@ -21,16 +21,19 @@
 						<h3 class="card-title">Edit</h3>
 					</div>
 					<div class="card-body" style="display: block;">
-						<div class="form-group">
-							<label asp-for="PickedAt" class="form-label"></label>
-							<input asp-for="PickedAt" class="form-control" aria-required="true" />
-							<span asp-validation-for="PickedAt" class="text-danger"></span>
-						</div>
-						<div class="form-group">
-							<label asp-for="DeliveredAt" class="form-label"></label>
-							<input asp-for="DeliveredAt" class="form-control" aria-required="true" />
-							<span asp-validation-for="DeliveredAt" class="text-danger"></span>
-						</div>
+						@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
+						{
+							<div class="form-group">
+								<label asp-for="PickedAt" class="form-label"></label>
+								<input asp-for="PickedAt" class="form-control" aria-required="true" />
+								<span asp-validation-for="PickedAt" class="text-danger"></span>
+							</div>
+							<div class="form-group">
+								<label asp-for="DeliveredAt" class="form-label"></label>
+								<input asp-for="DeliveredAt" class="form-control" aria-required="true" />
+								<span asp-validation-for="DeliveredAt" class="text-danger"></span>
+							</div>
+						}
 						<div class="form-group">
 							<label asp-for="PickWarehouseId" class="form-label"></label>
 							@if (Model.WarehouseNames != null) {
@@ -47,6 +50,7 @@
 						<div class="form-group">
 							<label asp-for="PickAddress" class="form-label"></label>
 							<textarea id="deliveryPickAddr" asp-for="PickAddress" class="form-control" rows="3" placeholder="Loading address"></textarea>
+							<span asp-validation-for="PickAddress" class="text-danger"></span>
 						</div>
 						<div class="form-group">
 							<label asp-for="DeliveryWarehouseId" class="form-label"></label>
@@ -64,6 +68,7 @@
 						<div class="form-group">
 							<label asp-for="DeliveryAddress" class="form-label"></label>
 							<textarea id="deliveryAddr" asp-for="DeliveryAddress" class="form-control" rows="3" placeholder="Delivery address"></textarea>
+							<span asp-validation-for="DeliveryAddress" class="text-danger"></span>
 						</div>
 						@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
 						{

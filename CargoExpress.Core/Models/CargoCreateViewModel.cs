@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 
 namespace CargoExpress.Core.Models
 {
@@ -36,6 +37,10 @@ namespace CargoExpress.Core.Models
 
         public string? UserId { get; set; }
 
-        public string? Status{ get; set; }
+        public string? Status { get; set; }
+
+        public string? DeliveryId { get; set; }
+
+        public Dictionary<string, string>? AvailableDeliveries { get; set; }
     }
 }

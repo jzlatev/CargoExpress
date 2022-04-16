@@ -69,7 +69,9 @@
                 repo.SaveChanges();
             }
             catch (InvalidOperationException)
-            { }
+            {
+                throw new InvalidOperationException("A problem has occurred. Contact your administrator.");
+            }
 
             return Task.CompletedTask;
         }
@@ -124,7 +126,7 @@
                 })
                 .ToList();
 
-            if (warehouse == null)
+            if (warehouse.Count == 0)
             {
                 return null;
             }

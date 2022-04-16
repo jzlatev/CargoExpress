@@ -84,7 +84,7 @@ namespace CargoExpress.Core.Services
         }
 
         public Task Create(CargoCreateViewModel model, ClaimsPrincipal user)
-        {
+        { 
             var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
             Cargo cargo = new Cargo
@@ -93,7 +93,8 @@ namespace CargoExpress.Core.Services
                 Weight = model.Weight,
                 Description = model.Description,
                 IsDangerous = model.IsDangerous,
-                UserId = userId.ToString()
+                UserId = userId.ToString(),
+                DeliveryId = model.DeliveryId != null ? new Guid(model.DeliveryId) : null
             };
 
             var cargoRef = cargo.CargoRef;
@@ -144,6 +145,7 @@ namespace CargoExpress.Core.Services
             cargo.Weight = model.Weight;
             cargo.Description = model.Description;
             cargo.IsDangerous = model.IsDangerous;
+            cargo.DeliveryId = model.DeliveryId != null ? new Guid(model.DeliveryId) : null;
 
             repo.SaveChanges();
         }
@@ -159,7 +161,8 @@ namespace CargoExpress.Core.Services
                     Description = c.Description,
                     IsDangerous = c.IsDangerous,
                     UserId = c.UserId,
-                    Status = c.getStatus()
+                    Status = c.getStatus(),
+                    DeliveryId = c.DeliveryId.ToString()
                 })
                 .ToList();
 
@@ -188,6 +191,20 @@ namespace CargoExpress.Core.Services
             cargoCreateViewModel.Status = cargo.getStatus();
 
             return cargoCreateViewModel;
+        }
+
+        public void PopulateAvailableDeliveries(CargoCreateViewModel model, ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var deliveries = repo.All<Delivery>().Select(d => d).Where(d => d.PickedAt == null && d.UserId == userId).ToList();
+            Dictionary<string, string> availableDeliveries = new Dictionary<string, string>();
+
+            foreach (var delivery in deliveries)
+            {
+                availableDeliveries.Add(delivery.Id.ToString(), delivery.DeliveryRef.ToString());
+            }
+
+            model.AvailableDeliveries = availableDeliveries;
         }
     }
 }

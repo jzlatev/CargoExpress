@@ -15,5 +15,7 @@ namespace CargoExpress.Core.Contracts
         void Edit(Guid guid, CargoCreateViewModel model);
 
         void Delete(Guid guid);
+
+        void PopulateAvailableDeliveries(CargoCreateViewModel model, ClaimsPrincipal user);
     }
 }

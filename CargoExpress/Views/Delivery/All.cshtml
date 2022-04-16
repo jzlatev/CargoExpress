@@ -56,21 +56,19 @@
 					<thead>
 						<tr>
 							<th style="width: 70px">Delivery reference</th>
-							<th style="width: 60px">Cargo reference</th>
-							<th style="width: 150px">Cargo name</th>
-							<th style="width: 80px">Cargo weight</th>
-							<th style="width: 20px">Created date</th>
-							<th style="width: 20px">Pick date</th>
-							<th style="width: 20px">Delivery date</th>
+							<th style="width: 60px">Cargo info</th>
+							<th style="width: 100px">Created date</th>
+							<th style="width: 100px">Pick date</th>
+							<th style="width: 100px">Delivery date</th>
 							<th style="width: 80px">Pick warehouse</th>
-							<th style="width: 190px">Pick address</th>
+							<th>Pick address</th>
 							<th style="width: 130px">Delivery warehouse</th>
-							<th style="width: 190px">Delivery address</th>
+							<th>Delivery address</th>
 							<th style="width: 50px">Status</th>
 							@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
 							{
-								<th style="width: 70px">Pick / Done</th>
-								<th style="width: 70px">Edit / Delete</th>
+								<th style="width: 100px">Pick / Done</th>
+								<th style="width: 100px">Edit / Delete</th>
 							}
 						</tr>
 					</thead>
@@ -79,32 +77,42 @@
 						{
 							<tr>
 								<td>@delivery.DeliveryRef</td>
-								<td>Cargo reference</td>
-								<td>Cargo name</td>
-								<td>Cargo weight</td>
+								<td>
+									<ul>
+									@foreach(var cargo in delivery.Cargos)
+									{
+										<li>@cargo.Name - @cargo.Weight</li>
+									}
+									</ul>
+								</td>
 								<td>@delivery.CreatedAt</td>
 								<td>@delivery.PickedAt</td>
 								<td>@delivery.DeliveredAt</td>
-								<td>@delivery.PickWarehouseId</td>
+								<td>@delivery.PickWarehouseName</td>
 								<td>@delivery.PickAddress</td>
-								<td>@delivery.DeliveryWarehouseId</td>
+								<td>@delivery.DeliveryWarehouseName</td>
 								<td>@delivery.DeliveryAddress</td>
 								<td>@delivery.Status</td>
 								@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
 								{
 									<td>
 										<div class="row offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1">
-											<a class="btn btn-info btn-sm mr-1 @((delivery.PickedAt == null && delivery.DeliveredAt == null) ? "" : "disabled")" asp-area="" asp-controller="Delivery" asp-action="Pick" asp-route-guid="@delivery.Id.ToString()" data-list-action-send-post>
+											<a class="btn btn-info btn-sm mr-1 @(((delivery.PickedAt == null && delivery.DeliveredAt == null) && delivery.TruckId != null) ? "" : "disabled")" asp-area="" asp-controller="Delivery" asp-action="Pick" asp-route-guid="@delivery.Id.ToString()" data-list-action-send-post>
 												<i class="fas fa-angle-up"></i>
 											</a>
-											<a class="btn btn-success btn-sm @((delivery.PickedAt != null && delivery.DeliveredAt == null) ? "" : "disabled")" asp-area="" asp-controller="Delivery" asp-action="Deliver" asp-route-guid="@delivery.Id.ToString()" data-list-action-send-post>
+											<a class="btn btn-success btn-sm @(((delivery.PickedAt != null && delivery.DeliveredAt == null) && delivery.TruckId != null) ? "" : "disabled")" asp-area="" asp-controller="Delivery" asp-action="Deliver" asp-route-guid="@delivery.Id.ToString()" data-list-action-send-post>
 												<i class="fas fa-angle-down"></i>
 											</a>
+											@if (delivery.TruckId == null)
+											{
+												<p class="text-danger">Please select a truck</p>
+											}
 										</div>
 									</td>
+								}
 									<td>
 										<div class="row offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1">
-											@if (delivery.Status == "Pending")
+											@if (delivery.Status == "Pending" || (User.IsInRole("Moderator") || User.IsInRole("Administrator")))
 											{
 												<a class="btn btn-primary btn-sm mr-1" asp-area="" asp-controller="Delivery" asp-action="Edit" asp-route-guid="@delivery.Id.ToString()">
 												<i class="fas fa-pen"></i>
@@ -115,7 +123,6 @@
 											</a>
 										</div>
 									</td>
-								}
 							</tr>
 						}
 					</tbody>

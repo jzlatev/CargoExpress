@@ -62,7 +62,12 @@
                     PickAddress = d.PickAddress,
                     DeliveryWarehouseId = d.DeliveryWarehouseId.ToString(),
                     DeliveryAddress = d.DeliveryAddress,
-                    Status = d.getStatus()
+                    Status = d.getStatus(),
+                    TruckId = d.TruckId,
+                    Cargos = d.Cargos.Where(c => c.DeliveryId == d.Id).ToList(),
+                    PickWarehouseName = repo.All<Warehouse>().Where(w => w.Id == d.PickWarehouseId).AsQueryable().Select(w => w.Name).First(),
+                    DeliveryWarehouseName = repo.All<Warehouse>().Where(w => w.Id == d.DeliveryWarehouseId).AsQueryable().Select(w => w.Name).First(),
+
                 })
                 .ToList();
 
@@ -83,26 +88,41 @@
                 TruckId = model.TruckId,
             };
 
-            var deliveryRef = delivery.DeliveryRef;
-
-            var cargoId = model.CargoId;
-
-            Cargo? cargo = repo.All<Cargo>()
-               .Where(d => d.Id == cargoId)
-               .ToList()
-               .FirstOrDefault();
-
-            cargo.DeliveryId = delivery.Id;
-
-
-            if (repo.All<Delivery>().Any(d => d.DeliveryRef == deliveryRef) && deliveryRef != null)
-            {
-                throw new FormException(nameof(model.CargoId), "The delivery exists.");
-            }
-
-            if (delivery.PickWarehouseId == delivery.DeliveryWarehouseId)
+            if (delivery.PickWarehouseId == delivery.DeliveryWarehouseId && 
+                !(delivery.PickWarehouseId == null || delivery.DeliveryWarehouseId == null))
             {
                 throw new FormException(nameof(model.DeliveryWarehouseId), "The loading warehouse coincides with the delivery warehouse.");
+            }
+
+            if (delivery.PickAddress == delivery.DeliveryAddress && 
+                !(delivery.PickAddress == null || delivery.PickAddress.ToString().Trim() == "" 
+                || delivery.DeliveryAddress == null || delivery.DeliveryAddress.ToString().Trim() == ""))
+            {
+                throw new FormException(nameof(model.DeliveryAddress), "The loading address coincides with the delivery address.");
+            }
+
+            if (delivery.PickWarehouseId == null && 
+                (delivery.PickAddress == null || delivery.PickAddress.ToString().Trim() == ""))
+            {
+                throw new FormException(nameof(model.PickAddress), "You must specify warehouse or address for picking");
+            }
+
+            if (delivery.PickWarehouseId != null && 
+                (delivery.PickAddress != null && delivery.PickAddress.ToString().Trim() != ""))
+            {
+                throw new FormException(nameof(model.PickAddress), "You must specify only warehouse or address for picking");
+            }
+
+            if (delivery.DeliveryWarehouseId == null && 
+                (delivery.DeliveryAddress == null || delivery.DeliveryAddress.ToString().Trim() == ""))
+            {
+                throw new FormException(nameof(model.DeliveryAddress), "You must specify warehouse or address for delivery");
+            }
+
+            if (delivery.DeliveryWarehouseId != null && 
+                (delivery.DeliveryAddress != null && delivery.DeliveryAddress.ToString().Trim() != ""))
+            {
+                throw new FormException(nameof(model.DeliveryAddress), "You must specify only warehouse or address for delivery");
             }
 
             try
@@ -111,7 +131,9 @@
                 repo.SaveChanges();
             }
             catch (InvalidOperationException)
-            { }
+            {
+                throw new InvalidOperationException("Error occured");
+            }
 
             return Task.CompletedTask;
         }
@@ -161,20 +183,55 @@
                 throw new Exception();
             }
 
-            if (model.PickWarehouseId == model.DeliveryWarehouseId)
+            if (model.PickWarehouseId == model.DeliveryWarehouseId && 
+                !(model.PickWarehouseId == null || model.DeliveryWarehouseId == null))
             {
                 throw new FormException(nameof(model.DeliveryWarehouseId), "The loading warehouse coincides with the delivery warehouse.");
             }
 
-            if (model.DeliveredAt != null && model.PickedAt == null)
+            if (model.PickAddress == model.DeliveryAddress && 
+                !(model.PickAddress == null || model.PickAddress.ToString().Trim() == "" 
+                || model.DeliveryAddress == null || model.DeliveryAddress.ToString().Trim() == ""))
             {
-                throw new FormException(nameof(model.PickedAt), "Missing loading date.");
+                throw new FormException(nameof(model.DeliveryAddress), "The loading address coincides with the delivery address.");
             }
 
-            //delivery.cargoId = model.CargoId ?????
+            if (model.PickWarehouseId == null && 
+                (model.PickAddress == null || model.PickAddress.ToString().Trim() == ""))
+            {
+                throw new FormException(nameof(model.PickAddress), "You must specify warehouse or address for picking");
+            }
 
-            delivery.PickedAt = model.PickedAt;
-            delivery.DeliveredAt = model.DeliveredAt;
+            if (model.PickWarehouseId != null && 
+                (model.PickAddress != null && model.PickAddress.ToString().Trim() != ""))
+            {
+                throw new FormException(nameof(model.PickAddress), "You must specify only warehouse or address for picking");
+            }
+
+            if (model.DeliveryWarehouseId == null && 
+                (model.DeliveryAddress == null || model.DeliveryAddress.ToString().Trim() == ""))
+            {
+                throw new FormException(nameof(model.DeliveryAddress), "You must specify warehouse or address for delivery");
+            }
+
+            if (model.DeliveryWarehouseId != null && 
+                (model.DeliveryAddress != null && model.DeliveryAddress.ToString().Trim() != ""))
+            {
+                throw new FormException(nameof(model.DeliveryAddress), "You must specify only warehouse or address for delivery");
+            }
+
+            if (model.TruckId == null && 
+                (model.PickedAt != null || model.DeliveredAt != null || (model.PickedAt != null && model.DeliveredAt != null)))
+            {
+                throw new FormException(nameof(model.TruckId), "You must specify truck for delivery");
+            }
+
+            if (user.IsInRole("Administrator") || user.IsInRole("Moderator"))
+            { 
+                delivery.PickedAt = model.PickedAt;
+                delivery.DeliveredAt = model.DeliveredAt;
+            }
+
             delivery.PickWarehouseId = model.PickWarehouseId;
             delivery.PickAddress = model.PickAddress;
             delivery.DeliveryWarehouseId = model.DeliveryWarehouseId;
@@ -195,7 +252,8 @@
                     PickWarehouseId = d.PickWarehouseId,
                     PickAddress = d.PickAddress,
                     DeliveryWarehouseId = d.DeliveryWarehouseId,
-                    DeliveryAddress = d.DeliveryAddress
+                    DeliveryAddress = d.DeliveryAddress,
+                    TruckId = d.TruckId,
                 })
                 .ToList();
 
@@ -254,34 +312,20 @@
             model.TruckPlates = availableTrucks;
         }
 
-        public void PopulateCargo(DeliveryCreateViewModel model, ClaimsPrincipal user)
-        {
-            var cargosQuery = repo.All<Cargo>().Where(c => c.DeliveryId == null).Select(c => c);
-
-            if (!(user.IsInRole("Administrator") || user.IsInRole("Moderator")))
-            {
-                cargosQuery = cargosQuery.Where(c => c.UserId == user.FindFirstValue(ClaimTypes.NameIdentifier));
-            }
-
-            var cargos = cargosQuery.ToList();
-
-            if (cargos == null)
-            {
-                throw new FormException(nameof(model.CargoId), "Тhere are no available cargos.");
-            }
-
-            Dictionary<string, string> availableCargos = new Dictionary<string, string>();
-
-            foreach (var cargo in cargos)
-            {
-                availableCargos.Add(cargo.Id.ToString(), cargo.Name);
-            }
-
-            model.CargoNames = availableCargos;
-        }
-        public void Pick(Guid guid)
+       public void Pick(Guid guid)
         {
             var delivery = GetDeliveryByGuid(guid);
+
+            if (delivery.TruckId == null)
+            {
+                return;
+            }
+
+            if (delivery != null && delivery.PickedAt != null)
+            {
+                return;
+            }
+
             delivery.PickedAt = DateTime.Now;
 
             repo.SaveChanges();
@@ -289,18 +333,21 @@
 
         public void Deliver(Guid guid)
         {
-            var deliveryField = repo.All<Delivery>()
-                .Where(d => d.Id == guid)
-                .Select(d => d.PickedAt)
-                .FirstOrDefault();
+            var delivery = GetDeliveryByGuid(guid);
 
-            if (deliveryField != null)
+            if (delivery.TruckId == null)
             {
-                var delivery = GetDeliveryByGuid(guid);
-                delivery.DeliveredAt = DateTime.Now;
-
-                repo.SaveChanges();
+                return;
             }
+
+            if (delivery != null && delivery.DeliveredAt != null)
+            {
+                return;
+            }
+
+            delivery.DeliveredAt = DateTime.Now;
+
+            repo.SaveChanges();
         }
     }  
 }

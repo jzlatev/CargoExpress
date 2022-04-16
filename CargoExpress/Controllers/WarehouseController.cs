@@ -8,8 +8,8 @@
 	using Microsoft.AspNetCore.Mvc;
     using Microsoft.CodeAnalysis.Differencing;
 
-    [Authorize(Roles = UserConstants.Roles.Moderator)]
-    [Authorize(Roles = UserConstants.Roles.Administrator)]
+
+    [Authorize(Roles = UserConstants.Roles.Administrator + "," + UserConstants.Roles.Moderator)]
     public class WarehouseController : BaseController
     {
         private readonly IWarehouseService warehouseService;

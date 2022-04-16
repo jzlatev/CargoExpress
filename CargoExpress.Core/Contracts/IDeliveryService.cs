@@ -2,6 +2,7 @@
 {
 	using CargoExpress.Core.Models;
     using CargoExpress.Core.Models.Enums;
+    using CargoExpress.Infrastructure.Data.Models;
     using System;
     using System.Security.Claims;
 
@@ -15,8 +16,6 @@
         
         void PopulateTruck(DeliveryCreateViewModel model);
 
-        void PopulateCargo(DeliveryCreateViewModel model, ClaimsPrincipal user);
-
         DeliveryCreateViewModel? GetDeliveryViewModelByGuid(Guid guid);
 
         void Edit(Guid guid, DeliveryCreateViewModel model, ClaimsPrincipal user);
@@ -26,5 +25,6 @@
         void Pick(Guid guid);
 
         void Deliver(Guid guid);
+        Delivery? GetDeliveryByGuid(Guid guid);
     }
 }

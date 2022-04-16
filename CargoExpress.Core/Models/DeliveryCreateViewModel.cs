@@ -21,16 +21,11 @@
         //[IsBefore(nameof(PickedAt), errorMessage: "Date must be after date of pick!")]
         public DateTime? DeliveredAt { get; set; }
 
-        [Required]
-        [Display(Name = "Cargo name")]
-        public Guid? CargoId { get; set; }
-
         public Dictionary<string, string>? CargoNames { get; set; }
 
         /// <summary>
         /// Warehouse of cargo
         /// </summary>
-        [Required]
         [Display(Name = "Loading warehouse number")]
         public Guid? PickWarehouseId { get; set; }
 

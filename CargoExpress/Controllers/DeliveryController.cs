@@ -4,6 +4,7 @@
     using CargoExpress.Core.Exceptions;
     using CargoExpress.Core.Models;
     using Microsoft.AspNetCore.Mvc;
+    using System.Security.Claims;
 
     public class DeliveryController : BaseController
     {
@@ -19,7 +20,6 @@
 		{
 			var model = new DeliveryCreateViewModel();
 			deliveryService.PopulateWarehouse(model);
-			deliveryService.PopulateCargo(model, User);
 			deliveryService.PopulateTruck(model);
 
 			return View(model);
@@ -31,7 +31,6 @@
 			if (!ModelState.IsValid)
 			{
 				deliveryService.PopulateWarehouse(model);
-				deliveryService.PopulateCargo(model, User);
 				deliveryService.PopulateTruck(model);
 
 				return View(model);
@@ -49,7 +48,6 @@
 			if (!ModelState.IsValid)
 			{
 				deliveryService.PopulateWarehouse(model);
-				deliveryService.PopulateCargo(model, User);
 				deliveryService.PopulateTruck(model);
 
 				return View(model);
@@ -72,8 +70,8 @@
             try
             {
 				model = deliveryService.GetDeliveryViewModelByGuid(new Guid(guid));
+
 				deliveryService.PopulateWarehouse(model);
-				deliveryService.PopulateCargo(model, User);
 				deliveryService.PopulateTruck(model);
 			}
 			catch (FormException fe)
@@ -84,6 +82,16 @@
             {
 				return RedirectToList();
             }
+
+			//var delivery = deliveryService.GetDeliveryByGuid(new Guid(guid));
+
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if (!(User.IsInRole("Administrator") || User.IsInRole("Moderator")) 
+				//&& (delivery.UserId != userId || delivery.getStatus() != "Pending")
+				)
+			{
+				return new ForbidResult();
+			}
 
 			if (model == null)
             {
@@ -97,12 +105,19 @@
 		public IActionResult Edit([FromQuery] string guid, DeliveryCreateViewModel model)
         {
 			deliveryService.PopulateWarehouse(model);
-			deliveryService.PopulateCargo(model, User);
 			deliveryService.PopulateTruck(model);
 
 			if (!ModelState.IsValid)
 			{
 				return View(model);
+			}
+			
+			var delivery = deliveryService.GetDeliveryByGuid(new Guid(guid));
+
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if (!(User.IsInRole("Administrator") || User.IsInRole("Moderator")) && (delivery.UserId != userId || delivery.getStatus() != "Pending"))
+			{
+				return new ForbidResult();
 			}
 
 			try
@@ -121,7 +136,6 @@
 			if (!ModelState.IsValid)
 			{
 				deliveryService.PopulateWarehouse(model);
-				deliveryService.PopulateCargo(model, User);
 				deliveryService.PopulateTruck(model);
 				return View(model);
 			}

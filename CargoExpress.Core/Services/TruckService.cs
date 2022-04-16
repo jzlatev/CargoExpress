@@ -84,11 +84,24 @@
         {
             Truck? truck = repo.All<Truck>()
                 .Where(t => t.Id == guid)
-                .ToList().FirstOrDefault();
+                .FirstOrDefault();
 
-            repo.Delete(truck);
+            Delivery? delivery = repo.All<Delivery>()
+                .Where(d => d.TruckId == truck.DeliveryId)
+                .FirstOrDefault();
 
-            repo.SaveChanges();
+            if (delivery != null)
+            {
+                delivery.TruckId = null;
+                delivery.PickedAt = null;
+                delivery.DeliveredAt = null;
+            }
+
+            if (truck != null)
+            {
+                repo.Delete(truck);
+                repo.SaveChanges();
+            }
         }
 
         public void Edit(Guid guid, TruckCreateViewModel model)
@@ -102,7 +115,7 @@
                 throw new Exception();
             }
 
-            if (repo.All<Truck>().Any(t => (t.DriverId == model.DriverId && t.Id!=guid)) && model.DriverId != null )
+            if (repo.All<Truck>().Any(t => (t.DriverId == model.DriverId && t.Id != guid)) && model.DriverId != null)
             {
                 throw new FormException("DriverId", "The driver is busy.");
             }
@@ -142,7 +155,7 @@
         {
             var drivers = repo.All<Driver>().Select(d => d).ToList();
             Dictionary<string, string> availableDrivers = new Dictionary<string, string>();
-            
+
             foreach (var driver in drivers)
             {
                 availableDrivers.Add(driver.Id.ToString(), String.Concat(driver.FirstName, " ", driver.LastName));
