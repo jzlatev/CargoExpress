@@ -55,20 +55,20 @@
 				<table class="table table-bordered">
 					<thead>
 						<tr>
-							<th style="width: 70px">Delivery reference</th>
-							<th style="width: 60px">Cargo info</th>
-							<th style="width: 100px">Created date</th>
-							<th style="width: 100px">Pick date</th>
-							<th style="width: 100px">Delivery date</th>
-							<th style="width: 80px">Pick warehouse</th>
+							<th>Delivery reference</th>
+							<th>Cargo info</th>
+							<th>Created date</th>
+							<th>Pick date</th>
+							<th>Delivery date</th>
+							<th>Pick warehouse</th>
 							<th>Pick address</th>
-							<th style="width: 130px">Delivery warehouse</th>
+							<th>Delivery warehouse</th>
 							<th>Delivery address</th>
-							<th style="width: 50px">Status</th>
+							<th>Status</th>
 							@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
 							{
-								<th style="width: 100px">Pick / Done</th>
-								<th style="width: 100px">Edit / Delete</th>
+								<th>Pick / Done</th>
+								<th>Edit / Delete</th>
 							}
 						</tr>
 					</thead>
@@ -95,19 +95,20 @@
 								<td>@delivery.Status</td>
 								@if (User.IsInRole("Moderator") || User.IsInRole("Administrator"))
 								{
-									<td>
-										<div class="row offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1">
+									<td class="text-center">
+										<div class="row offset-sm-4 offset-md-4 offset-lg-4 offset-xl-4 text-center">
 											<a class="btn btn-info btn-sm mr-1 @(((delivery.PickedAt == null && delivery.DeliveredAt == null) && delivery.TruckId != null) ? "" : "disabled")" asp-area="" asp-controller="Delivery" asp-action="Pick" asp-route-guid="@delivery.Id.ToString()" data-list-action-send-post>
 												<i class="fas fa-angle-up"></i>
 											</a>
 											<a class="btn btn-success btn-sm @(((delivery.PickedAt != null && delivery.DeliveredAt == null) && delivery.TruckId != null) ? "" : "disabled")" asp-area="" asp-controller="Delivery" asp-action="Deliver" asp-route-guid="@delivery.Id.ToString()" data-list-action-send-post>
 												<i class="fas fa-angle-down"></i>
 											</a>
-											@if (delivery.TruckId == null)
+											
+										</div>
+										@if (delivery.TruckId == null)
 											{
 												<p class="text-danger">Please select a truck</p>
 											}
-										</div>
 									</td>
 								}
 									<td>
