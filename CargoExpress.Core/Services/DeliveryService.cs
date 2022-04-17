@@ -29,7 +29,8 @@
                 deliveryQuery = deliveryQuery.Where(d =>
                 d.DeliveryRef.ToLower().Contains(searchTerm.ToLower()) ||
                 d.DeliveryAddress.ToLower().Contains(searchTerm.ToLower()) ||
-                d.PickAddress.ToLower().Contains(searchTerm.ToLower()));
+                d.PickAddress.ToLower().Contains(searchTerm.ToLower()) ||
+                d.Warehouse.Name.ToLower().Contains(searchTerm.ToLower()));
             }
 
             deliveryQuery = deliverySorting switch

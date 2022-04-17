@@ -7,7 +7,7 @@
     {
         public const int DeliveriesPerPage = 10;
 
-        [Display(Name = "Search by word or text")]
+        [Display(Name = "Search by ref, address or warehouse name")]
         public string SearchTerm { get; set; }
 
         [Display(Name = "Sorting by")]

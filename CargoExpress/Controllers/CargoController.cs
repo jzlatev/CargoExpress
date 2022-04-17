@@ -140,7 +140,6 @@ namespace CargoExpress.Controllers
         {
             CargoCreateViewModel? model = null;
 
-
             model = cargoService.GetCargoViewModelByGuid(new Guid(guid));
             
 

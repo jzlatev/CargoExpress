@@ -7,8 +7,7 @@
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
 
-    [Authorize(Roles = UserConstants.Roles.Moderator+","+UserConstants.Roles.Administrator)]
-//    [Authorize(Roles = UserConstants.Roles.Administrator)]
+    [Authorize(Roles = UserConstants.Roles.Moderator + "," + UserConstants.Roles.Administrator)]
     public class TruckController : BaseController
     {
         private readonly ITruckService truckService;

@@ -115,7 +115,7 @@
 										<div class="row offset-sm-1 offset-md-1 offset-lg-1 offset-xl-1">
 											@if (delivery.Status == "Pending" || (User.IsInRole("Moderator") || User.IsInRole("Administrator")))
 											{
-												<a class="btn btn-primary btn-sm mr-1" asp-area="" asp-controller="Delivery" asp-action="Edit" asp-route-guid="@delivery.Id.ToString()">
+												<a class="btn btn-primary btn-sm mr-1 @(delivery.Status == "Done" ? "disabled" : "")" asp-area="" asp-controller="Delivery" asp-action="Edit" asp-route-guid="@delivery.Id.ToString()">
 												<i class="fas fa-pen"></i>
 											</a>	
 											}

@@ -83,11 +83,11 @@
 				return RedirectToList();
             }
 
-			//var delivery = deliveryService.GetDeliveryByGuid(new Guid(guid));
+			var delivery = deliveryService.GetDeliveryByGuid(new Guid(guid));
 
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			if (!(User.IsInRole("Administrator") || User.IsInRole("Moderator")) 
-				//&& (delivery.UserId != userId || delivery.getStatus() != "Pending")
+				&& (delivery.UserId != userId || delivery.getStatus() != "Pending")
 				)
 			{
 				return new ForbidResult();

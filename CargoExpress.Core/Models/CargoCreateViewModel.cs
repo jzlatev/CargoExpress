@@ -19,7 +19,7 @@ namespace CargoExpress.Core.Models
         /// Weight of cargo.
         /// </summary>
         [Required]
-        [Range(1, 300000)]
+        [Range(1, 25000)]
         [Display(Name = "Weight (kg)")]
         public float Weight { get; set; }
 

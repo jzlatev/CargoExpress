@@ -153,7 +153,7 @@
 
         public void PopulateAvailableDrivers(TruckCreateViewModel model)
         {
-            var drivers = repo.All<Driver>().Select(d => d).ToList();
+            var drivers = repo.All<Driver>().Where(d => d.Truck.DriverId == null).Select(d => d).ToList();
             Dictionary<string, string> availableDrivers = new Dictionary<string, string>();
 
             foreach (var driver in drivers)
