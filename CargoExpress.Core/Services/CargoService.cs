@@ -101,7 +101,7 @@ namespace CargoExpress.Core.Services
 
             if (repo.All<Cargo>().Any(c => c.CargoRef == cargoRef) && cargoRef != null)
             {
-                throw new FormException(nameof(cargo.CargoRef), "The delivery exists.");
+                throw new FormException(nameof(cargo.CargoRef), "The cargo exists.");
             }
 
             try
@@ -196,6 +196,7 @@ namespace CargoExpress.Core.Services
         public void PopulateAvailableDeliveries(CargoCreateViewModel model, ClaimsPrincipal user)
         {
             var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var deliveries = repo.All<Delivery>().Select(d => d).Where(d => d.PickedAt == null && d.UserId == userId).ToList();
             Dictionary<string, string> availableDeliveries = new Dictionary<string, string>();
 

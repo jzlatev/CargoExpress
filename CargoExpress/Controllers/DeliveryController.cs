@@ -86,6 +86,7 @@
 			var delivery = deliveryService.GetDeliveryByGuid(new Guid(guid));
 
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
 			if (!(User.IsInRole("Administrator") || User.IsInRole("Moderator")) 
 				&& (delivery.UserId != userId || delivery.getStatus() != "Pending")
 				)
@@ -137,6 +138,7 @@
 			{
 				deliveryService.PopulateWarehouse(model);
 				deliveryService.PopulateTruck(model);
+
 				return View(model);
 			}
 
